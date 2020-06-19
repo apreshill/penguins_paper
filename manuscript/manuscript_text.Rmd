@@ -6,6 +6,7 @@ bibliography: ../bibliography/references.bib
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(here)
 library(palmerpenguins)
 library(kableExtra)
 library(patchwork)
@@ -18,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Authors
 
-Allison Horst, Alison Hill, Kristen Gorman
+Allison Horst, Alison Hill, Kristen Gorman (order TBD)
 
 ## Keywords
 
@@ -32,14 +33,14 @@ In 1935, American botanist Edgar Anderson measured petal and sepal dimensions (l
 
 *Sounds great. Why consider switching?*
 
-In 1936, one year after its publication in the *Bulletin of the American Iris Society*, Anderson’s *Iris* measurements were further analyzed and published by eugenicist and statistician Ronald A. Fisher in *The Annals of Eugenics* [@fisher]. Regardless of Anderson's initial motivation, the dataset today inextricably linked to Fisher’s eugenics research and even commonly (if unfairly) referred to as "*Fisher's* iris data" (ref). Due to its history in - and association with - Fisher's eugenics research, there is momentum to replace Iris with alternative datasets that offer similar teaching and learning opportunities.
+In 1936, one year after publication in the *Bulletin of the American Iris Society*, Anderson’s *Iris* measurements were further analyzed and published by eugenicist and statistician Ronald A. Fisher in *The Annals of Eugenics* [@fisher]. Regardless of Anderson's initial motivation, the dataset today inextricably linked to Fisher’s eugenics research and even commonly (if unfairly) referred to as "*Fisher's* iris data" (ref). Due to its history in - and association with - Fisher's eugenics research, there is momentum to replace Iris with alternative datasets that offer similar teaching and learning opportunities.
 
 Considering *Iris* usage, we established the following criteria for a suitable alternative dataset: 
 
 - Available by an appropriate license, ideally CC0 (no rights reserved)
-- Should feature intuitive subjects and variables that are understandable to learners across fields
-- Dimensions should be manageable (but not trivial)
-- Contain real-world observations for improved understanding and engagement [@cafe]
+- Feature intuitive subjects and variables understandable to learners across fields
+- Manageable, but not trivial, size
+- Real-world observations for improved understanding and engagement [@cafe]
 - Provide similar opportunities for teaching data science skills and statistical methods
 
 Here, we offer an alternative to Anderson's irises that largely satisfies those criteria: an approachable and charismatic dataset containing real-world size measurements for three penguin species observed on islands in Palmer Archipelago, Antarctica. Comparable size, characteristics and learning opportunities make the penguins data uniquely transferable for educators currently using *Iris*. By highlighting similarities in data structure and analyses, as well as several examples for which the penguins are *not* a good alternative, we demonstrate that the penguins can replace irises for many use cases. 
@@ -189,45 +190,152 @@ penguin_bill_scatter + iris_sepal_scatter
 
 ### Differences between groups 
 
-As in `iris`, multiple opportunities for comparisons between groups also exist in `penguins`. 
+As in `iris`, multiple opportunities for comparisons between groups also exist in `penguins` (Figure X). Notably, more obvious separation between species exists in `iris` (Figure X E & F), compared to any between-species comparisons in `penguins` (Figure X A - D). 
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 
-iris_bee <- ggplot(iris, aes(x = Species, y = Petal.Width)) +
-  geom_boxplot(color = "gray80",
-               fill = "gray92", 
-               outlier.color = NA
-               ) +
-  geom_beeswarm(aes(color = Species), 
-                alpha = 0.6,
-                size = 2) + 
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
-  theme_minimal() +
-  theme(legend.position = c(0.2, 0.8),
-        plot.title.position = "plot") +
-  labs(x = "Iris species",
-       y = "Petal width (cm)",
-       title = "Iris petal width")
+# Update this with an actual theme FFS and use '&' in patchwork
 
-fpenguins_bee <- penguins %>% 
+iris_pw <- ggplot(iris, aes(x = Species, y = Petal.Width)) +
+  geom_boxplot(aes(color = Species),
+               show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme_bw() +
+  theme(plot.title.position = "plot") +
+  labs(x = "",
+       y = "Petal width (cm)") +
+  coord_flip()
+
+iris_pl <- ggplot(iris, aes(x = Species, y = Petal.Length)) +
+  geom_boxplot(aes(color = Species),
+               show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme_bw() +
+  theme(plot.title.position = "plot") +
+  labs(x = "",
+       y = "Petal length (cm)") +
+  coord_flip()
+
+iris_sl <- ggplot(iris, aes(x = Species, y = Sepal.Length)) +
+  geom_boxplot(aes(color = Species),
+               show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme_bw() +
+  theme(plot.title.position = "plot") +
+  labs(x = "",
+       y = "Sepal length (cm)") +
+  coord_flip()
+
+iris_sw <- ggplot(iris, aes(x = Species, y = Sepal.Width)) +
+  geom_boxplot(aes(color = Species),
+               show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme_bw() +
+  theme(plot.title.position = "plot") +
+  labs(x = "",
+       y = "Sepal width (cm)") +
+  coord_flip()
+
+penguins_flip <- penguins %>%
   ggplot(aes(x = species, y = flipper_length_mm)) +
-  geom_boxplot(color = "gray80",
-               fill = "gray92", 
-               outlier.color = NA
-               ) +
-  geom_beeswarm(aes(color = species), 
-                alpha = 0.6,
-                size = 2) + 
+  geom_boxplot(aes(color = species),
+               show.legend = FALSE) +
   scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
-  theme_minimal() +
-  theme(legend.position = c(0.2, 0.8),
-        plot.title.position = "plot") +
-  labs(x = "Penguin species",
-       y = "Flipper length (mm)",
-       title = "Penguin flipper length")
+  theme_bw() +
+  theme(plot.title.position = "plot") +
+  labs(x = "",
+       y = "Flipper length (mm)") +
+  coord_flip()
 
-fpenguins_bee + iris_bee
+penguins_mass <- penguins %>%
+  ggplot(aes(x = species, y = body_mass_g)) +
+  geom_boxplot(aes(color = species),
+               show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme_bw() +
+  theme(plot.title.position = "plot") +
+  labs(x = "",
+       y = "Body mass (g)") +
+  coord_flip()
+
+penguins_bill_length <- penguins %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_boxplot(aes(color = species),
+               show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme_bw() +
+  theme(plot.title.position = "plot") +
+  labs(x = "",
+       y = "Bill length (mm)") +
+  coord_flip()
+
+penguins_bill_depth <- penguins %>%
+  ggplot(aes(x = species, y = bill_depth_mm)) +
+  geom_boxplot(aes(color = species),
+               show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme_bw() +
+  theme(plot.title.position = "plot") +
+  labs(x = "",
+       y = "Bill depth (mm)") +
+  coord_flip()
+
+penguins_box <- penguins_flip / penguins_mass / penguins_bill_length / penguins_bill_depth + plot_layout(guides = "collect")
+
+iris_box <- iris_pw / iris_pl / iris_sw / iris_sl + plot_layout(guides = "collect")
+
+penguins_box | iris_box + plot_annotation(
+  title = 'Penguin and iris sizes',
+  subtitle = 'Penguin size measurements (left) and iris petal and sepal dimensions (right)'
+)
+
+ggsave(here("figures","penguins_iris_box.png"), height = 7, width = 8)
+
 ```
+
+### Classification? 
+
+### Other comparative analyses? 
+
+## Selected activities
+
+### Hypothesis testing 
+
+- t-tests
+- ANOVAs
+- MANOVAs
+
+### Linear regression
+
+- Application, diagnostics, interpretation & predictions
+
+## Appendix
+
+### Appendix A: Variables in the raw data
+
+- **studyName:** Sampling expedition indicator
+- **Sample Number:** Integer denoting the continuous numbering sequence for each penguin
+- **Species:** a factor denoting the penguin species (Adelie, Chinstrap, or Gentoo)
+- **Region**: A character denoting the region of the Palmer LTER sampling grid
+- **Island:** a factor denoting the island where observed (Torgersen, Dream or Biscoe) in Palmer Archipelago
+- **Stage:** A character string denoting reproductive stage at sampling
+- **Individual ID:** A character string denoting a unique ID for each penguin
+- **Clutch Completion:** A character string denoting if the study next observed with a full clutch, i.e. 2 eggs
+- **Date Egg:** A date denoting the date study nest observed with 1 egg
+- **Culmen Length:** A number denoting the length of the dorsal ridge of a bird's bill (millimeters)
+- **Culmen Depth:** A number denoting the depth of the dorsal ridge of a bird's bill (millimeters)
+- **Flipper Length:** An integer denoting the penguin flipper length (millimeters)
+- **Body Mass:** An integer denoting the penguin body mass (grams)
+- **Sex:** A character string denoting the sex of an animal
+- **Delta 15 N:** A number denoting the measure of the ratio of stable isotopes 15N:14N
+- **Delta 13 C:** A number denoting the measure of the ratio of stable isotopes 13C:12C
+- **Comments:** A character string with text providing additional relevant information for data
+
+
+## Citations
+
+
+## Random other stuff
 
 Compared to the single factor in `iris` (Species), `penguins`' three factors (species, island, sex) increase opportunities for comparisons between groups (Figure X).
 
@@ -268,31 +376,28 @@ ggplot(aes(x = body_mass_g)) +
 cd / cl / fl / bm + plot_layout(guides = "collect")
 ```
 
+## Differences by islands? 
 
+```{r}
+# No difference in Adelie across islands: Chinstrap only on Dream, Gentoo only on Torgerson
+penguins %>% 
+  ggplot(aes(x = island, y = body_mass_g)) +
+  geom_point() +
+  facet_wrap(~species)
 
-#### Comparison 3: Principal components analysis
+penguins %>% 
+  ggplot(aes(x = island, y = flipper_length_mm)) +
+  geom_point() +
+  facet_wrap(~species)
 
-## Appendix
+penguins %>% 
+  ggplot(aes(x = island, y = bill_length_mm)) +
+  geom_point() +
+  facet_wrap(~species)
 
-### Appendix A: Variables in the raw data
+penguins %>% 
+  ggplot(aes(x = island, y = bill_depth_mm)) +
+  geom_point() +
+  facet_wrap(~species)
+```
 
-- **studyName:** Sampling expedition indicator
-- **Sample Number:** Integer denoting the continuous numbering sequence for each penguin
-- **Species:** a factor denoting the penguin species (Adelie, Chinstrap, or Gentoo)
-- **Region**: A character denoting the region of the Palmer LTER sampling grid
-- **Island:** a factor denoting the island where observed (Torgersen, Dream or Biscoe) in Palmer Archipelago
-- **Stage:** A character string denoting reproductive stage at sampling
-- **Individual ID:** A character string denoting a unique ID for each penguin
-- **Clutch Completion:** A character string denoting if the study next observed with a full clutch, i.e. 2 eggs
-- **Date Egg:** A date denoting the date study nest observed with 1 egg
-- **Culmen Length:** A number denoting the length of the dorsal ridge of a bird's bill (millimeters)
-- **Culmen Depth:** A number denoting the depth of the dorsal ridge of a bird's bill (millimeters)
-- **Flipper Length:** An integer denoting the penguin flipper length (millimeters)
-- **Body Mass:** An integer denoting the penguin body mass (grams)
-- **Sex:** A character string denoting the sex of an animal
-- **Delta 15 N:** A number denoting the measure of the ratio of stable isotopes 15N:14N
-- **Delta 13 C:** A number denoting the measure of the ratio of stable isotopes 13C:12C
-- **Comments:** A character string with text providing additional relevant information for data
-
-
-## Citations
