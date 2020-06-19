@@ -377,6 +377,7 @@ summary {
 
 <div id="authors" class="section level2">
 <h2>Authors</h2>
+<p>Allison Horst, Alison Hill, Kristen Gorman</p>
 </div>
 <div id="keywords" class="section level2">
 <h2>Keywords</h2>
@@ -387,7 +388,7 @@ summary {
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>In 1935, American botanist Edgar Anderson measured petal and sepal dimensions (length and width) for 50 samples from three <em>Iris</em> species: <em>Iris setosa</em>, <em>Iris versicolor</em>, and <em>Iris virginica</em> <span class="citation">(Anderson, Edgar 1935)</span>. The manageable but non-trivial size (5 variables and 150 total observations) and characteristics of the data make it amenable for introducing a wide range of statistical methods including data wrangling, visualization, hypothesis testing, regression, machine learning, and more. Anderson’s <em>Iris</em> dataset is even built into a number of software packages, including in the auto-installed <em>datasets</em> package in <em>R</em>, Python’s <em>scikit-learn</em> machine learning library, and the SAS <em>Sashelp</em> library, further facilitating its widespread use. As a result, eighty-five years after the data were initially published, Anderson’s Iris measurements are ubiquitous in statistics and data science materials.</p>
+<p>In 1935, American botanist Edgar Anderson measured petal and sepal dimensions (length and width) for 50 samples from three <em>Iris</em> species: <em>Iris setosa</em>, <em>Iris versicolor</em>, and <em>Iris virginica</em> <span class="citation">(Anderson, Edgar 1935)</span>. The manageable but non-trivial size (5 variables and 150 total observations) and characteristics of the data (….SOMETHING HERE) make it amenable for introducing a wide range of statistical methods including data wrangling, visualization, hypothesis testing, regression, machine learning, and more. Anderson’s <em>Iris</em> dataset is even built into a number of software packages, including in the auto-installed <em>datasets</em> package in <em>R</em>, Python’s <em>scikit-learn</em> machine learning library, and the SAS <em>Sashelp</em> library, further facilitating its widespread use. As a result, eighty-five years after the data were initially published, Anderson’s Iris measurements are ubiquitous in statistics and data science materials.</p>
 <p><em>Sounds great. Why consider switching?</em></p>
 <p>In 1936, one year after its publication in the <em>Bulletin of the American Iris Society</em>, Anderson’s <em>Iris</em> measurements were further analyzed and published by eugenicist and statistician Ronald A. Fisher in <em>The Annals of Eugenics</em> <span class="citation">(Fisher, Ronald A. 1936)</span>. Regardless of Anderson’s initial motivation, the dataset today inextricably linked to Fisher’s eugenics research and even commonly (if unfairly) referred to as “<em>Fisher’s</em> iris data” (ref). Due to its history in - and association with - Fisher’s eugenics research, there is momentum to replace Iris with alternative datasets that offer similar teaching and learning opportunities.</p>
 <p>Considering <em>Iris</em> usage, we established the following criteria for a suitable alternative dataset:</p>
@@ -416,7 +417,7 @@ summary {
 <li><strong>body_mass_g:</strong> an integer denoting penguin body mass (grams)</li>
 <li><strong>sex:</strong> a factor denoting penguin sex (male, female)</li>
 </ul>
-<p>The <code>penguins</code> subset contains 333 complete cases, with missing values (n<sub>missing</sub> = 19) indicated by <code>NA</code> throughout. In addition to reduced variables, the curated <code>penguins</code> subset is minimally updated from <code>penguins_raw</code> as follows:</p>
+<p>The <code>penguins</code> subset contains 333 complete cases, with missing values (n<sub>missing</sub> = 19, percent missing is 0.79 %) indicated by <code>NA</code> throughout. In addition to reduced variables, the curated <code>penguins</code> subset is minimally updated from <code>penguins_raw</code> as follows:</p>
 <ol style="list-style-type: decimal">
 <li>All variable names are converted to lower snake case</li>
 <li>Factor levels for species are truncated to only include the common name (e.g. “Gentoo”, instead of “Gentoo penguin (<em>Pygoscelis papua</em>)”)</li>
@@ -430,7 +431,7 @@ summary {
 <p>We feel that the <code>penguins</code> data is generally useful and approachable for statistics education, and that it is uniquely well-suited to replace <code>iris</code>. Comparisons presented here are representative examples, and are not exhaustive.</p>
 <div id="structure-and-sample-size" class="section level3">
 <h3>Structure and sample size</h3>
-<p>Both <code>iris</code> and <code>penguins</code> datasets are tidy <span class="citation">(Wickham, Hadley 2014)</span>, with each column denoting a single variable and each row containing a single observation (Table 1, 2).</p>
+<p>Both <code>iris</code> and <code>penguins</code> datasets are in tidy format <span class="citation">(Wickham, Hadley 2014)</span>, with each column denoting a single variable and each row containing a single observation (Table 1, 2).</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
 Table 1. Iris dataset, 6 random observations (of 150 total)
@@ -729,7 +730,7 @@ male
 </tr>
 </tbody>
 </table>
-<p>Overall sizes are comparable: dimensions (# columns <span class="math inline">\(\times\)</span> # rows) are 5 <span class="math inline">\(\times\)</span> 150 and 7 <span class="math inline">\(\times\)</span> 344 for <code>iris</code> and <code>penguins</code>, respectively, and sample sizes within groups (e.g. by species) are similar (Table 3).</p>
+<p>Overall sizes are comparable: dimensions (# columns <span class="math inline">\(\times\)</span> # rows) are 5 <span class="math inline">\(\times\)</span> 150 and 7 <span class="math inline">\(\times\)</span> 344 for <code>iris</code> and <code>penguins</code>, respectively, and sample sizes within groups (e.g. by species) are similar (Table 3). Note that the additional factors in <code>penguins</code> (species, island and sex) create additional opportunities for grouping, compared to the single factor in <code>iris</code> (Species).</p>
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }

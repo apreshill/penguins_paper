@@ -62,7 +62,7 @@ As a direct alternative to Anderson's *Iris* data, we recommend using the curate
 - **body_mass_g:** an integer denoting penguin body mass (grams)
 - **sex:** a factor denoting penguin sex (male, female)
 
-The `penguins` subset contains `r sum(complete.cases(penguins))` complete cases, with missing values (n~missing~ = `r sum(is.na(penguins))`) indicated by `NA` throughout. In addition to reduced variables, the curated `penguins` subset is minimally updated from `penguins_raw` as follows: 
+The `penguins` subset contains `r sum(complete.cases(penguins))` complete cases, with missing values (n~missing~ = `r sum(is.na(penguins))`, percent missing is `r round(100*sum(is.na(penguins))/(7*344),2)` %) indicated by `NA` throughout. In addition to reduced variables, the curated `penguins` subset is minimally updated from `penguins_raw` as follows: 
 
 1. All variable names are converted to lower snake case
 2. Factor levels for species are truncated to only include the common name (e.g. "Gentoo", instead of "Gentoo penguin (*Pygoscelis papua*)")
@@ -75,7 +75,7 @@ We feel that the `penguins` data is generally useful and approachable for statis
 
 ### Structure and sample size 
 
-Both `iris` and `penguins` datasets are tidy [@tidydata], with each column denoting a single variable and each row containing a single observation (Table 1, 2). 
+Both `iris` and `penguins` datasets are in tidy format [@tidydata], with each column denoting a single variable and each row containing a single observation (Table 1, 2). 
 
 ```{r, echo = FALSE}
 set.seed(1900)
@@ -91,7 +91,7 @@ sample_n(penguins, 6) %>%
   kable_styling(full_width = FALSE)
 ```
 
-Overall sizes are comparable: dimensions (# columns $\times$ # rows) are 5 $\times$ 150 and 7 $\times$ 344 for `iris` and `penguins`, respectively, and sample sizes within groups (e.g. by species) are similar (Table 3). 
+Overall sizes are comparable: dimensions (# columns $\times$ # rows) are 5 $\times$ 150 and 7 $\times$ 344 for `iris` and `penguins`, respectively, and sample sizes within groups (e.g. by species) are similar (Table 3). Note that the additional factors in `penguins` (species, island and sex) create additional opportunities for grouping, compared to the single factor in `iris` (Species). 
 
 ```{r compare_counts, echo = FALSE}
 
