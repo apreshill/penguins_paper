@@ -14,6 +14,7 @@ library(ggExtra)
 library(gt)
 library(ggpubr)
 library(ggbeeswarm)
+library(car)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -131,32 +132,52 @@ iris_penguin_n %>%
 
 #### Comparison 1: Linear trends across or within species
 
-An overall approximately linear relationship can be explored using petal dimensions from `iris`, and penguin size (flipper length versus body mass) in `penguins` (Figure X). Educators may explore how linear regression across all species of iris or penguins compares to regression performed separately for each species. 
+An overall approximately linear relationship can be explored using petal dimensions from `iris`, and penguin size (flipper length versus body mass) in `penguins` (Figure X). Educators may explore how linear regression across all species of iris or penguins (Figure X A,B) compares to regression performed separately for each species (Figure X C,D). 
 
 
-```{r, echo = FALSE, warning = FALSE}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 
 penguin_flip_mass_scatter <- ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
-  geom_point(aes(color = species), size = 2, alpha = 0.7) +
+  geom_point(aes(color = species, shape = species), size = 1.5, alpha = 0.7) +
+  geom_smooth(method = "lm", aes(group = species, color = species), se = FALSE) +
   theme_minimal() +
   scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
   theme(legend.position = c(0.3, 0.8)) +
+  labs(x = "Flipper length (mm)", 
+       y = "Body mass (g)") +
+  theme(plot.title.position = "plot")
+
+penguin_flip_mass_scatter_all <- ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(color = "gray50", size = 1.5, alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  theme_minimal() +
   labs(x = "Flipper length (mm)", 
        y = "Body mass (g)",
        title = "Penguin size") +
   theme(plot.title.position = "plot")
 
 iris_petal_scatter <- ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) +
-  geom_point(aes(color = Species), size = 2, alpha = 0.7) +
+  geom_point(aes(color = Species, size = Species, shape = Species), size = 1.5, alpha = 0.7) +
+  geom_smooth(aes(group = Species, color = Species), method = "lm", se = FALSE) +
   theme_minimal() +
   scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
   theme(legend.position = c(0.3, 0.8)) +
+  labs(x = "Petal length (cm)",
+       y = "Petal width (cm)") +
+  theme(plot.title.position = "plot")
+
+iris_petal_scatter_all <- ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) +
+  geom_point(color = "gray50", size = 1.5, alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  theme_minimal() +
   labs(x = "Petal length (cm)",
        y = "Petal width (cm)",
        title = "Iris petal dimensions") +
   theme(plot.title.position = "plot")
 
-penguin_flip_mass_scatter + iris_petal_scatter
+(penguin_flip_mass_scatter_all + iris_petal_scatter_all) / (penguin_flip_mass_scatter + iris_petal_scatter)
+
+ggsave(here("figures","iris_penguins_scatter.png"), height = 6, width = 6)
 ```
 
 #### Comparison 2: linear relationships within species
@@ -191,6 +212,23 @@ penguin_bill_scatter + iris_sepal_scatter
 ### Differences between groups 
 
 As in `iris`, multiple opportunities for comparisons between groups also exist in `penguins` (Figure X). Notably, more obvious separation between species exists in `iris` (Figure X E & F), compared to any between-species comparisons in `penguins` (Figure X A - D). 
+
+```{r, include = FALSE}
+
+# CHECK THIS ALL!!! 
+# ANOVA to see if flipper lengths are significantly different...(this says yes, but want other eyes)
+flipper_lm <- lm(flipper_length_mm ~ species, data = penguins)
+
+flipper_anova <- Anova(flipper_lm, type = "III")
+flipper_anova
+
+flip_aov <- aov(flipper_lm)
+summary(flip_aov)
+
+# TukeyHSD(flip_aov) all significantly different
+
+```
+
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 
@@ -242,7 +280,6 @@ penguins_flip <- penguins %>%
                show.legend = FALSE) +
   scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
   theme_bw() +
-  theme(plot.title.position = "plot") +
   labs(x = "",
        y = "Flipper length (mm)") +
   coord_flip()
@@ -253,7 +290,6 @@ penguins_mass <- penguins %>%
                show.legend = FALSE) +
   scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
   theme_bw() +
-  theme(plot.title.position = "plot") +
   labs(x = "",
        y = "Body mass (g)") +
   coord_flip()
@@ -263,8 +299,7 @@ penguins_bill_length <- penguins %>%
   geom_boxplot(aes(color = species),
                show.legend = FALSE) +
   scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
-  theme_bw() +
-  theme(plot.title.position = "plot") +
+  theme_bw()+
   labs(x = "",
        y = "Bill length (mm)") +
   coord_flip()
@@ -275,18 +310,18 @@ penguins_bill_depth <- penguins %>%
                show.legend = FALSE) +
   scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
   theme_bw() +
-  theme(plot.title.position = "plot") +
   labs(x = "",
        y = "Bill depth (mm)") +
   coord_flip()
 
-penguins_box <- penguins_flip / penguins_mass / penguins_bill_length / penguins_bill_depth + plot_layout(guides = "collect")
+penguins_box <- penguins_flip / penguins_mass / penguins_bill_length / penguins_bill_depth + plot_layout(guides = "collect") + plot_annotation(title = "Penguins")
 
 iris_box <- iris_pw / iris_pl / iris_sw / iris_sl + plot_layout(guides = "collect")
 
 penguins_box | iris_box + plot_annotation(
   title = 'Penguin and iris sizes',
-  subtitle = 'Penguin size measurements (left) and iris petal and sepal dimensions (right)'
+  subtitle = 'Penguin size measurements (left) and iris petal and sepal dimensions (right)',
+  tag_levels = 'A'
 )
 
 ggsave(here("figures","penguins_iris_box.png"), height = 7, width = 8)
@@ -297,17 +332,17 @@ ggsave(here("figures","penguins_iris_box.png"), height = 7, width = 8)
 
 ### Other comparative analyses? 
 
-## Selected activities
-
 ### Hypothesis testing 
 
-- t-tests
-- ANOVAs
-- MANOVAs
+- t-tests?
+- ANOVAs?
+- MANOVAs?
 
-### Linear regression
+## Suggested activities
 
-- Application, diagnostics, interpretation & predictions
+### Activity 1: Predict penguin body mass 
+
+
 
 ## Appendix
 
