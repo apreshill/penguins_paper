@@ -30,21 +30,21 @@ Edgar Anderson's *Iris* data are ubiquitous in statistics and data science educa
 
 ## Introduction 
 
-In 1935, American botanist Edgar Anderson measured petal and sepal dimensions (length and width) for 50 samples from three *Iris* species: *Iris setosa*, *Iris versicolor*, and *Iris virginica* [@anderson]. The manageable but non-trivial size (5 variables and 150 total observations) and characteristics of the data (....SOMETHING HERE) make it amenable for introducing a wide range of statistical methods including data wrangling, visualization, hypothesis testing, regression, machine learning, and more. Anderson's *Iris* dataset is even built into a number of software packages, including in the auto-installed *datasets* package in *R*, Python's *scikit-learn* machine learning library, and the SAS *Sashelp* library, further facilitating its widespread use. As a result, eighty-five years after the data were initially published, Anderson’s Iris measurements are ubiquitous in statistics and data science materials. 
+In 1935, American botanist Edgar Anderson measured petal and sepal dimensions (length and width) for 50 samples from three *Iris* species: *Iris setosa*, *Iris versicolor*, and *Iris virginica* [@anderson]. The manageable but non-trivial size (5 variables and 150 total observations) and characteristics of the data make it amenable for introducing a wide range of statistical methods including data wrangling, visualization, regression, classification and more. Anderson's *Iris* dataset is even built into a number of software packages, including in the auto-installed *datasets* package in *R* (R Core Team), Python's *scikit-learn* machine learning library [@scikit-learn], and the SAS *Sashelp* library, further facilitating its widespread use. As a result, eighty-five years after the data were initially published, Anderson’s Iris measurements are ubiquitous in statistics and data science education. 
 
 *Sounds great. Why consider switching?*
 
-In 1936, one year after publication in the *Bulletin of the American Iris Society*, Anderson’s *Iris* measurements were further analyzed and published by eugenicist and statistician Ronald A. Fisher in *The Annals of Eugenics* [@fisher]. Regardless of Anderson's initial motivation, the dataset today inextricably linked to Fisher’s eugenics research and even commonly (if unfairly) referred to as "*Fisher's* iris data" (ref). Due to its history in - and association with - Fisher's eugenics research, there is momentum to replace Iris with alternative datasets that offer similar teaching and learning opportunities.
+In 1936, one year after publication in the *Bulletin of the American Iris Society*, Anderson’s *Iris* measurements were further analyzed and published by eugenicist and statistician Ronald A. Fisher in *The Annals of Eugenics* [@fisher]. Regardless of Anderson's initial motivation, the dataset today remains inextricably linked to Fisher’s eugenics research and even commonly (if unfairly) referred to as "*Fisher's* iris data" (ref). Due to its history in - and strong association with - Fisher's eugenics research, there is momentum to replace the *Iris* data with alternative datasets that offer similar teaching and learning opportunities.
 
-Considering *Iris* usage, we established the following criteria for a suitable alternative dataset: 
+Considering *Iris* data usage, we established the following criteria for a suitable alternative dataset: 
 
 - Available by an appropriate license, ideally CC0 (no rights reserved)
 - Feature intuitive subjects and variables understandable to learners across fields
-- Manageable, but not trivial, size
-- Real-world observations for improved understanding and engagement [@cafe]
+- Manageable - but not trivial - in size
+- Real-world (not manufactured) data for improved understanding and engagement [@cafe]
 - Provide similar opportunities for teaching data science skills and statistical methods
 
-Here, we offer an alternative to Anderson's irises that largely satisfies those criteria: an approachable and charismatic dataset containing real-world size measurements for three penguin species observed on islands in Palmer Archipelago, Antarctica. Comparable size, characteristics and learning opportunities make the penguins data uniquely transferable for educators currently using *Iris*. By highlighting similarities in data structure and analyses, as well as several examples for which the penguins are *not* a good alternative, we demonstrate that the penguins can replace irises for many use cases. 
+Here, we offer an alternative to Anderson's *Iris* data that largely satisfies those criteria: an approachable and charismatic dataset containing real-world size measurements for three penguin species observed on islands in Palmer Archipelago, Antarctica. Comparable size, characteristics and learning opportunities make the penguins data uniquely transferable for educators currently using *Iris*. By highlighting similarities in data structure and analyses, as well as several examples for which the penguins are *not* a good alternative, we demonstrate that the penguins can replace irises for many use cases. 
 
 ## Data source
 
@@ -54,7 +54,7 @@ Data for each penguin species (Adélie, chinstrap and gentoo) were imported sepa
 
 ### Curated `penguins` data
 
-As a direct alternative to Anderson's *Iris* data, we recommend using the curated `penguins` object in the *palmerpenguins* data package. The `penguins` data is a subset of `penguins_raw` retaining all 344 rows (individual penguins) but reduced to the following seven variables: 
+As a direct alternative to Anderson's *Iris* data, we recommend using the curated `penguins` object in the **palmerpenguins** *R* data package. The `penguins` data is a subset of `penguins_raw` retaining all 344 rows (individual penguins) but reduced to the following seven variables: 
 
 - **species:** a factor denoting the penguin species (Adelie, Chinstrap, or Gentoo)
 - **island:** a factor denoting the island (in Palmer Archipelago, Antarctica) where observed (Biscoe, Dream or Torgersen)
@@ -64,7 +64,7 @@ As a direct alternative to Anderson's *Iris* data, we recommend using the curate
 - **body_mass_g:** an integer denoting penguin body mass (grams)
 - **sex:** a factor denoting penguin sex (male, female)
 
-The `penguins` subset contains `r sum(complete.cases(penguins))` complete cases, with missing values (n~missing~ = `r sum(is.na(penguins))`, percent missing is `r round(100*sum(is.na(penguins))/(7*344),2)` %) indicated by `NA` throughout. In addition to reduced variables, the curated `penguins` subset is minimally updated from `penguins_raw` as follows: 
+The `penguins` subset contains `r sum(complete.cases(penguins))` complete cases, with missing values (n~missing~ = `r sum(is.na(penguins))`, or `r round(100*sum(is.na(penguins))/(7*344),2)` % of all values) indicated by `NA` throughout. In addition to reduced variables, the curated `penguins` subset is minimally updated from `penguins_raw` as follows: 
 
 1. All variable names are converted to lower snake case
 2. Factor levels for species are truncated to only include the common name (e.g. "Gentoo", instead of "Gentoo penguin (*Pygoscelis papua*)")
@@ -73,7 +73,7 @@ The `penguins` subset contains `r sum(complete.cases(penguins))` complete cases,
 
 ## Selected comparisons: `penguins` and `iris`
 
-We feel that the `penguins` data is generally useful and approachable for statistics education, and that it is uniquely well-suited to replace `iris`. Comparisons presented here are representative examples, and are not exhaustive. 
+We feel that the `penguins` data is generally useful and approachable for statistics education, and that it is uniquely well-suited to replace `iris`. Comparisons presented here are representative examples, and are not exhaustive. Additional examples and tutorials are shared in the [user-contributed examples](https://allisonhorst.github.io/palmerpenguins/articles/articles/user_contributions.html) article on the package website.  
 
 ### Structure and sample size 
 
@@ -128,7 +128,7 @@ iris_penguin_n %>%
   )
 ```
 
-### Correlation
+### Linear correlation & regression opportunities
 
 #### Comparison 1: Linear trends across or within species
 
@@ -181,6 +181,8 @@ ggsave(here("figures","iris_penguins_scatter.png"), height = 6, width = 6)
 ```
 
 #### Comparison 2: linear relationships within species
+
+More obvious clustering (by penguin species) exists when comparing bill length and depth (Figure X), and the relationship also provides an opportunity to introduce & explore Simpson's Paradox. 
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 penguin_bill_scatter <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
@@ -328,19 +330,52 @@ ggsave(here("figures","penguins_iris_box.png"), height = 7, width = 8)
 
 ```
 
-### Classification? 
+### Hypothesis testing
 
-### Other comparative analyses? 
+### Principle components analysis
 
-### Hypothesis testing 
+### Clustering (e.g. k-means?)
 
-- t-tests?
-- ANOVAs?
-- MANOVAs?
+### Classification (Alison Hill blog post?)
 
-## Suggested activities
+## Penguin data access for non-R users
 
-### Activity 1: Predict penguin body mass 
+The Palmer Archipelago penguins data are available to non-R users by direct import from the Environmental Data Initiative, from GitHub, and as a stored dataset in existing packages. Below we share several current ways to access the data (as of July 2020 - we expect availability to expand in the future).
+
+### Download or import directly from Environmental Data Initiative
+
+The [Environmental Data Initiative](https://environmentaldatainitiative.org/) is "an NSF-funded project, actively promoting and enabling curation and re-use of environmental data." The raw data for each penguin species (Adélie, Gentoo and Chinstrap) are stored in a separate data file at the following links (see full citations in Citations):
+
+- Adélie data: [KNB-LTER Data Package 219.5](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.219.5)
+- Gentoo data: [KNB-LTER Data Package 220.5](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.220.5)
+- Chinstrap data: [KNB-LTER Data Package 221.5](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.221.6)
+
+The links above contain all metadata information, and provides options to directly download the data as a comma-separated value (CSV) file *or* import for use directly using code provided (e.g. for R, Python, SAS, MatLab, or SPSS). 
+
+### Download CSV from the palmerpenguins GitHub repo
+
+A CSV containing curated data for all three species (accessed directly from EDI) exists in the 'data-raw' folder in the palmerpenguins repo on GitHub. GitHub users can fork / clone the repo, and will then have the cleaned CSV containing all 3 penguin species. 
+
+### The penguins in other packages & languages
+
+The Palmer Station penguin data has been added to existing libraries, including (non-exhaustive): 
+
+#### Python modules
+
+- Seaborn
+- blah blah
+
+See examples for working with penguins in Python here: 
+
+
+
+#### Kaggle
+
+- here 
+
+#### Elsewhere? 
+
+## Conclusion
 
 
 
@@ -367,10 +402,10 @@ ggsave(here("figures","penguins_iris_box.png"), height = 7, width = 8)
 - **Comments:** A character string with text providing additional relevant information for data
 
 
-## Citations
 
 
-## Random other stuff
+
+# Random other stuff
 
 Compared to the single factor in `iris` (Species), `penguins`' three factors (species, island, sex) increase opportunities for comparisons between groups (Figure X).
 
@@ -436,3 +471,8 @@ penguins %>%
   facet_wrap(~species)
 ```
 
+A Web of Science search reveals that Fisher's 1936 paper has been cited in 7,258 publications (as of June 2020), most often in journals publishing in fields of Computer Science (57% of 7,258 citing references), Mathematics (49%), and Engineering (29%) - most of which we expect are crediting Anderson's *Iris* data, and not Fisher's eugenics work. 
+
+# End random other stuff
+
+## Citations
