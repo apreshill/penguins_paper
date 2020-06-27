@@ -93,7 +93,11 @@ The `penguins` subset contains `r sum(complete.cases(penguins))` complete cases,
 
 ## Selected comparisons: `penguins` and `iris`
 
+<<<<<<< HEAD
 We feel that the `penguins` data is generally useful and approachable for statistics education, and that it is uniquely well-suited to replace `iris`. Comparisons presented here are representative examples, and are not exhaustive. Additional examples and tutorials are shared in the [user-contributed examples](https://allisonhorst.github.io/palmerpenguins/articles/articles/user_contributions.html) article on the **palmerpenguins** package website.  
+=======
+We feel that the `penguins` data is generally useful and approachable for statistics education, and that it is uniquely well-suited to replace `iris`. Comparisons presented here are representative examples, and are not exhaustive. Additional examples and tutorials are shared in the [user-contributed examples](https://allisonhorst.github.io/palmerpenguins/articles/articles/user_contributions.html) article on the package website.  
+>>>>>>> 0181779cd02ccdc2413d2698c7029f18572f3757
 
 ### Structure and sample size 
 
@@ -148,7 +152,11 @@ iris_penguin_n %>%
   )
 ```
 
+<<<<<<< HEAD
 ### Overview comparison: numeric variables
+=======
+### Linear correlation & regression opportunities
+>>>>>>> 0181779cd02ccdc2413d2698c7029f18572f3757
 
 Relationships, distributions and correlations can be explored for the four numeric variables in `iris` (sepal width and length, petal width and length) and `penguins` (flipper length, body mass, bill length and depth) in pair plots (Figure X A,B). 
 
@@ -236,6 +244,7 @@ ggsave(here("figures","iris_penguins_scatter.png"), height = 6, width = 6)
 ```
 
 
+<<<<<<< HEAD
 ### Hypothesis testing
 
 ### Linear discriminant analysis? 
@@ -444,6 +453,14 @@ penguins_kmeans <- ggplot(data = bills_cluster, aes(x = bill_length_mm,
                                      bill_depth_mm)) +
   geom_text(aes(label=cluster_no, color = species), 
                   size = 4) +
+=======
+More obvious clustering (by penguin species) exists when comparing bill length and depth (Figure X), and the relationship also provides an opportunity to introduce & explore Simpson's Paradox. 
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+penguin_bill_scatter <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point(aes(color = species), size = 2, alpha = 0.7) +
+  theme_minimal() +
+>>>>>>> 0181779cd02ccdc2413d2698c7029f18572f3757
   scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
   labs(title = "Penguins k-means clustering") +
   theme(legend.position = "bottom")
@@ -766,7 +783,126 @@ ggsave(here("figures","penguins_iris_box.png"), height = 7, width = 8)
 
 ```
 
+<<<<<<< HEAD
 ### Hierarchical clustering?
+=======
+### Hypothesis testing
+
+### Principle components analysis
+
+### Clustering (e.g. k-means?)
+
+### Classification (Alison Hill blog post?)
+
+## Penguin data access for non-R users
+
+The Palmer Archipelago penguins data are available to non-R users by direct import from the Environmental Data Initiative, from GitHub, and as a stored dataset in existing packages. Below we share several current ways to access the data (as of July 2020 - we expect availability to expand in the future).
+
+### Download or import directly from Environmental Data Initiative
+
+The [Environmental Data Initiative](https://environmentaldatainitiative.org/) is "an NSF-funded project, actively promoting and enabling curation and re-use of environmental data." The raw data for each penguin species (Adélie, Gentoo and Chinstrap) are stored in a separate data file at the following links (see full citations in Citations):
+
+- Adélie data: [KNB-LTER Data Package 219.5](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.219.5)
+- Gentoo data: [KNB-LTER Data Package 220.5](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.220.5)
+- Chinstrap data: [KNB-LTER Data Package 221.5](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.221.6)
+
+The links above contain all metadata information, and provides options to directly download the data as a comma-separated value (CSV) file *or* import for use directly using code provided (e.g. for R, Python, SAS, MatLab, or SPSS). 
+
+### Download CSV from the palmerpenguins GitHub repo
+
+A CSV containing curated data for all three species (accessed directly from EDI) exists in the 'data-raw' folder in the palmerpenguins repo on GitHub. GitHub users can fork / clone the repo, and will then have the cleaned CSV containing all 3 penguin species. 
+
+### The penguins in other packages & languages
+
+The Palmer Station penguin data has been added to existing libraries, including (non-exhaustive): 
+
+#### Python modules
+
+- Seaborn
+- blah blah
+
+See examples for working with penguins in Python here: 
+
+
+
+#### Kaggle
+
+- here 
+
+#### Elsewhere? 
+
+## Conclusion
+
+
+## Appendix
+
+### Appendix A: Variables in the raw data
+
+- **studyName:** Sampling expedition indicator
+- **Sample Number:** Integer denoting the continuous numbering sequence for each penguin
+- **Species:** a factor denoting the penguin species (Adelie, Chinstrap, or Gentoo)
+- **Region**: A character denoting the region of the Palmer LTER sampling grid
+- **Island:** a factor denoting the island where observed (Torgersen, Dream or Biscoe) in Palmer Archipelago
+- **Stage:** A character string denoting reproductive stage at sampling
+- **Individual ID:** A character string denoting a unique ID for each penguin
+- **Clutch Completion:** A character string denoting if the study next observed with a full clutch, i.e. 2 eggs
+- **Date Egg:** A date denoting the date study nest observed with 1 egg
+- **Culmen Length:** A number denoting the length of the dorsal ridge of a bird's bill (millimeters)
+- **Culmen Depth:** A number denoting the depth of the dorsal ridge of a bird's bill (millimeters)
+- **Flipper Length:** An integer denoting the penguin flipper length (millimeters)
+- **Body Mass:** An integer denoting the penguin body mass (grams)
+- **Sex:** A character string denoting the sex of an animal
+- **Delta 15 N:** A number denoting the measure of the ratio of stable isotopes 15N:14N
+- **Delta 13 C:** A number denoting the measure of the ratio of stable isotopes 13C:12C
+- **Comments:** A character string with text providing additional relevant information for data
+
+
+
+
+
+# Random other stuff
+
+Compared to the single factor in `iris` (Species), `penguins`' three factors (species, island, sex) increase opportunities for comparisons between groups (Figure X).
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+
+cd <- penguins %>% 
+  filter(sex %in% c("male","female")) %>% 
+ggplot(aes(x = bill_depth_mm)) +
+  geom_histogram(aes(fill = species), alpha = 0.6, position = "identity") +
+  scale_fill_manual(values = c("darkorange","darkorchid","cyan4")) +
+  facet_wrap(~ sex) +
+  theme_minimal()
+
+cl <- penguins %>% 
+  filter(sex %in% c("male","female")) %>% 
+ggplot(aes(x = bill_length_mm)) +
+  geom_histogram(aes(fill = species), alpha = 0.6, position = "identity") +
+  scale_fill_manual(values = c("darkorange","darkorchid","cyan4")) +
+  facet_wrap(~ sex) +
+  theme_minimal()
+
+fl <- penguins %>% 
+  filter(sex %in% c("male","female")) %>% 
+ggplot(aes(x = flipper_length_mm)) +
+  geom_histogram(aes(fill = species), alpha = 0.6, position = "identity") +
+  scale_fill_manual(values = c("darkorange","darkorchid","cyan4")) +
+  facet_wrap(~ sex) +
+  theme_minimal()
+
+bm <- penguins %>% 
+  filter(sex %in% c("male","female")) %>% 
+ggplot(aes(x = body_mass_g)) +
+  geom_histogram(aes(fill = species), alpha = 0.6, position = "identity") +
+  scale_fill_manual(values = c("darkorange","darkorchid","cyan4")) +
+  facet_wrap(~ sex) +
+  theme_minimal()
+
+cd / cl / fl / bm + plot_layout(guides = "collect")
+```
+
+## Differences by islands? 
+>>>>>>> 0181779cd02ccdc2413d2698c7029f18572f3757
 
 ```{r}
 hc_iris <- hclust(dist(iris[, 1:4]))
@@ -780,6 +916,11 @@ ggdendrogram(hc_penguins, rotate = TRUE, size = 2)
 
 ```
 
+<<<<<<< HEAD
+=======
+A Web of Science search reveals that Fisher's 1936 paper has been cited in 7,258 publications (as of June 2020), most often in journals publishing in fields of Computer Science (57% of 7,258 citing references), Mathematics (49%), and Engineering (29%) - most of which we expect are crediting Anderson's *Iris* data, and not Fisher's eugenics work. 
+
+>>>>>>> 0181779cd02ccdc2413d2698c7029f18572f3757
 # End random other stuff
 
 ## Citations
