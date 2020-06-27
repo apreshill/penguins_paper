@@ -15,7 +15,16 @@ library(gt)
 library(ggpubr)
 library(ggbeeswarm)
 library(car)
+library(GGally)
+library(recipes)
+library(tidytext)
+library(ggrepel)
+library(shadowtext)
+library(glue)
+library(ggdendro)
 knitr::opts_chunk$set(echo = TRUE)
+
+theme_set(theme_minimal())
 ```
 
 ## Authors
@@ -23,6 +32,8 @@ knitr::opts_chunk$set(echo = TRUE)
 Allison Horst, Alison Hill, Kristen Gorman (order TBD)
 
 ## Keywords
+
+
 
 ## Abstract
 
@@ -50,7 +61,16 @@ Here, we offer an alternative to Anderson's *Iris* data that largely satisfies t
 
 Size measurements, clutch observations, and blood isotope levels for male and female nesting adult Adélie (*Pygoscelis adeliae*), chinstrap (*Pygoscelis antarcticus*), and gentoo (*Pygoscelis papua*) penguins on three islands in the Palmer Archipelago were collected from 2007 - 2009 by Dr. Kristen Gorman with the [Palmer Station Long Term Ecological Research Program](https://pal.lternet.edu/), part of the [US Long Term Ecological Research Network](https://lternet.edu/). For complete data collection methods see [@gorman_plos]. The data were imported directly from the [Environmental Data Initiative](https://environmentaldatainitiative.org/) (EDI) Data Portal [@adelie_edi; @gentoo_edi; @chinstrap_edi] and are available for use by CC0 license ("No Rights Reserved") in accordance with the [Palmer Station Data Policy](https://pal.lternet.edu/data/policies). 
 
-Data for each penguin species (Adélie, chinstrap and gentoo) were imported separately, then combined into a single table stored in the [*palmerpenguins*](https://allisonhorst.github.io/palmerpenguins/) package as object `penguins_raw`. Data in `penguins_raw` are in tidy format [@tidydata] and contain observations for 17 variables (Appendix Table 1) recorded completely or in part for 344 individual penguins. 
+For easier data access and use we created the [**palmerpenguins**](https://allisonhorst.github.io/palmerpenguins/) data package in *R*, which contains two data objects: 
+
+- `penguins_raw`: a table containing all raw data 
+- `penguins`: a simplified table containing only size measurements, sex, island and species 
+
+The penguins data can also be imported directly from EDI, or accessed elsewhere (see *Penguin access for non-R users* section for more options). 
+
+### Uncurated `penguins_raw` data
+
+Data for each penguin species (Adélie, chinstrap and gentoo) were imported from EDI, then combined into a single table stored in the [*palmerpenguins*](https://allisonhorst.github.io/palmerpenguins/) package as object `penguins_raw`. Data in `penguins_raw` are in tidy format [@tidydata] and contain observations for 17 variables (Appendix Table 1) recorded completely or in part for 344 individual penguins. For full variable descriptions and metadata, visit the data packages through EDI.
 
 ### Curated `penguins` data
 
@@ -73,7 +93,7 @@ The `penguins` subset contains `r sum(complete.cases(penguins))` complete cases,
 
 ## Selected comparisons: `penguins` and `iris`
 
-We feel that the `penguins` data is generally useful and approachable for statistics education, and that it is uniquely well-suited to replace `iris`. Comparisons presented here are representative examples, and are not exhaustive. Additional examples and tutorials are shared in the [user-contributed examples](https://allisonhorst.github.io/palmerpenguins/articles/articles/user_contributions.html) article on the package website.  
+We feel that the `penguins` data is generally useful and approachable for statistics education, and that it is uniquely well-suited to replace `iris`. Comparisons presented here are representative examples, and are not exhaustive. Additional examples and tutorials are shared in the [user-contributed examples](https://allisonhorst.github.io/palmerpenguins/articles/articles/user_contributions.html) article on the **palmerpenguins** package website.  
 
 ### Structure and sample size 
 
@@ -110,16 +130,16 @@ penguin_counts <- penguins %>%
 iris_penguin_n <- cbind(iris_counts, penguin_counts) %>% 
   rename(`Sample size` = n)
 
-iris_penguin_n %>% 
-  gt() %>% 
+iris_penguin_n %>%
+  gt() %>%
   tab_spanner(
     label = "Iris data",
     columns = vars(`Iris species`, `Sample size`)
-  ) %>% 
+  ) %>%
   tab_spanner(
     label = "Penguin data",
     columns = vars(`Penguin species`, `Female`, `Male`, `NA`)
-  ) %>% 
+  ) %>%
   tab_footnote(
     footnote = "Note: Here, penguin sample sizes are split by species and sex, and could be further divided by island.",
     location = cells_column_labels(
@@ -128,14 +148,47 @@ iris_penguin_n %>%
   )
 ```
 
-### Linear correlation & regression opportunities
+### Overview comparison: numeric variables
 
-#### Comparison 1: Linear trends across or within species
+Relationships, distributions and correlations can be explored for the four numeric variables in `iris` (sepal width and length, petal width and length) and `penguins` (flipper length, body mass, bill length and depth) in pair plots (Figure X A,B). 
 
-An overall approximately linear relationship can be explored using petal dimensions from `iris`, and penguin size (flipper length versus body mass) in `penguins` (Figure X). Educators may explore how linear regression across all species of iris or penguins (Figure X A,B) compares to regression performed separately for each species (Figure X C,D). 
+```{r, warning = FALSE, message = FALSE, echo = FALSE, fig.align = "center"}
+penguins %>%
+  select(species, where(is.numeric)) %>% 
+  ggpairs(aes(color = species),
+          columns = c("flipper_length_mm", "body_mass_g", 
+                      "bill_length_mm", "bill_depth_mm")) +
+  scale_colour_manual(values = c("darkorange","purple","cyan4")) +
+  scale_fill_manual(values = c("darkorange","purple","cyan4")) +
+  theme_minimal() +
+  theme(text = element_text(size = 10))
+
+ggsave(here("figures","penguins_ggpairs.png"), height = 6, width = 5)
+
+iris %>%
+  ggpairs(aes(color = Species),
+          columns = c("Petal.Length", "Petal.Width", 
+                      "Sepal.Length", "Sepal.Width")) +
+  scale_colour_manual(values = c("darkorange","purple","cyan4")) +
+  scale_fill_manual(values = c("darkorange","purple","cyan4")) +
+  theme_minimal() +
+  theme(text = element_text(size = 10),
+        panel.background = element_rect(fill = "gray90", color = "gray90"))
+
+ggsave(here("figures","iris_ggpairs.png"), height = 6, width = 5)
+
+```
 
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
+### Linear correlation & regression
+
+As seen in Figures (X,X) there are a number of opportunities to explore linear relationships and correlations in both `penguins` and `iris`. Here, we point out one comparison that is uniquely similar: 
+petal dimensions (petal length versus petal width) from `iris`, and penguin size (flipper length versus body mass) in `penguins` (Figure X). We see that the overall trend across species is relatively linear for both `iris` and `penguins` (Figure X A,B). Teachers may encourage students explore how results of regression performed across all three species of iris or penguins (Figure X A,B) compare to results for regression performed within species (Figure X C,D).
+
+Notably, distinctions between species are clearer for `iris` petals - particularly, the much smaller petals for *Iris setosa* - compared to `penguins`, in which Adélie and chinstrap penguins are largely overlapping in body size (body mass and flipper length), and are both generally smaller than gentoos. This difference is revisited in the k-means clustering example below. 
+
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.align = "center"}
 
 penguin_flip_mass_scatter <- ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_point(aes(color = species, shape = species), size = 1.5, alpha = 0.7) +
@@ -164,7 +217,8 @@ iris_petal_scatter <- ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) +
   theme(legend.position = c(0.3, 0.8)) +
   labs(x = "Petal length (cm)",
        y = "Petal width (cm)") +
-  theme(plot.title.position = "plot")
+  theme(plot.title.position = "plot",
+        panel.background = element_rect(fill = "gray90", color = "gray90"))
 
 iris_petal_scatter_all <- ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) +
   geom_point(color = "gray50", size = 1.5, alpha = 0.5) +
@@ -173,170 +227,291 @@ iris_petal_scatter_all <- ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) +
   labs(x = "Petal length (cm)",
        y = "Petal width (cm)",
        title = "Iris petal dimensions") +
-  theme(plot.title.position = "plot")
+  theme(plot.title.position = "plot",
+        panel.background = element_rect(fill = "gray90", color = "gray90"))
 
 (penguin_flip_mass_scatter_all + iris_petal_scatter_all) / (penguin_flip_mass_scatter + iris_petal_scatter)
 
 ggsave(here("figures","iris_penguins_scatter.png"), height = 6, width = 6)
 ```
 
-#### Comparison 2: linear relationships within species
-
-More obvious clustering (by penguin species) exists when comparing bill length and depth (Figure X), and the relationship also provides an opportunity to introduce & explore Simpson's Paradox. 
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-penguin_bill_scatter <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
-  geom_point(aes(color = species), size = 2, alpha = 0.7) +
-  theme_minimal() +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
-  theme(legend.position = "bottom") +
-  labs(x = "Bill length (mm)", 
-       y = "Bill depth (g)",
-       title = "Penguin size", 
-       color = "Species") +
-  theme(plot.title.position = "plot")
-
-iris_sepal_scatter <- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
-  geom_point(aes(color = Species), size = 2, alpha = 0.7) +
-  theme_minimal() +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
-  theme(legend.position = "bottom") +
-  labs(x = "Sepal length (cm)",
-       y = "Sepal width (cm)",
-       title = "Iris sepal dimensions") +
-  theme(plot.title.position = "plot")
-
-penguin_bill_scatter + iris_sepal_scatter
-```
-
-
-
-### Differences between groups 
-
-As in `iris`, multiple opportunities for comparisons between groups also exist in `penguins` (Figure X). Notably, more obvious separation between species exists in `iris` (Figure X E & F), compared to any between-species comparisons in `penguins` (Figure X A - D). 
-
-```{r, include = FALSE}
-
-# CHECK THIS ALL!!! 
-# ANOVA to see if flipper lengths are significantly different...(this says yes, but want other eyes)
-flipper_lm <- lm(flipper_length_mm ~ species, data = penguins)
-
-flipper_anova <- Anova(flipper_lm, type = "III")
-flipper_anova
-
-flip_aov <- aov(flipper_lm)
-summary(flip_aov)
-
-# TukeyHSD(flip_aov) all significantly different
-
-```
-
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-
-# Update this with an actual theme FFS and use '&' in patchwork
-
-iris_pw <- ggplot(iris, aes(x = Species, y = Petal.Width)) +
-  geom_boxplot(aes(color = Species),
-               show.legend = FALSE) +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
-  theme_bw() +
-  theme(plot.title.position = "plot") +
-  labs(x = "",
-       y = "Petal width (cm)") +
-  coord_flip()
-
-iris_pl <- ggplot(iris, aes(x = Species, y = Petal.Length)) +
-  geom_boxplot(aes(color = Species),
-               show.legend = FALSE) +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
-  theme_bw() +
-  theme(plot.title.position = "plot") +
-  labs(x = "",
-       y = "Petal length (cm)") +
-  coord_flip()
-
-iris_sl <- ggplot(iris, aes(x = Species, y = Sepal.Length)) +
-  geom_boxplot(aes(color = Species),
-               show.legend = FALSE) +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
-  theme_bw() +
-  theme(plot.title.position = "plot") +
-  labs(x = "",
-       y = "Sepal length (cm)") +
-  coord_flip()
-
-iris_sw <- ggplot(iris, aes(x = Species, y = Sepal.Width)) +
-  geom_boxplot(aes(color = Species),
-               show.legend = FALSE) +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
-  theme_bw() +
-  theme(plot.title.position = "plot") +
-  labs(x = "",
-       y = "Sepal width (cm)") +
-  coord_flip()
-
-penguins_flip <- penguins %>%
-  ggplot(aes(x = species, y = flipper_length_mm)) +
-  geom_boxplot(aes(color = species),
-               show.legend = FALSE) +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
-  theme_bw() +
-  labs(x = "",
-       y = "Flipper length (mm)") +
-  coord_flip()
-
-penguins_mass <- penguins %>%
-  ggplot(aes(x = species, y = body_mass_g)) +
-  geom_boxplot(aes(color = species),
-               show.legend = FALSE) +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
-  theme_bw() +
-  labs(x = "",
-       y = "Body mass (g)") +
-  coord_flip()
-
-penguins_bill_length <- penguins %>%
-  ggplot(aes(x = species, y = bill_length_mm)) +
-  geom_boxplot(aes(color = species),
-               show.legend = FALSE) +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
-  theme_bw()+
-  labs(x = "",
-       y = "Bill length (mm)") +
-  coord_flip()
-
-penguins_bill_depth <- penguins %>%
-  ggplot(aes(x = species, y = bill_depth_mm)) +
-  geom_boxplot(aes(color = species),
-               show.legend = FALSE) +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
-  theme_bw() +
-  labs(x = "",
-       y = "Bill depth (mm)") +
-  coord_flip()
-
-penguins_box <- penguins_flip / penguins_mass / penguins_bill_length / penguins_bill_depth + plot_layout(guides = "collect") + plot_annotation(title = "Penguins")
-
-iris_box <- iris_pw / iris_pl / iris_sw / iris_sl + plot_layout(guides = "collect")
-
-penguins_box | iris_box + plot_annotation(
-  title = 'Penguin and iris sizes',
-  subtitle = 'Penguin size measurements (left) and iris petal and sepal dimensions (right)',
-  tag_levels = 'A'
-)
-
-ggsave(here("figures","penguins_iris_box.png"), height = 7, width = 8)
-
-```
 
 ### Hypothesis testing
 
+### Linear discriminant analysis? 
+
 ### Principle components analysis
 
-### Clustering (e.g. k-means?)
+The `iris` dataset appears frequently in examples for multivariate analyses, including principal component analysis (PCA). PCA is a dimensional reduction method that can be useful in capturing as much information about patterns in multivariate data as possible in a reduced number of dimensions (e.g., 2-dimensions for visualization). PCA with `iris` yields intuitive PC outcomes and clear clustering (Figure X) helpful for learners, as described in detail by others (ref, ref). 
 
-### Classification (Alison Hill blog post?)
+PCA with `penguins` reveals a similar outcome (Figure X): two somewhat overlapping species (Adélie and Chinstrap) with one clearly separated (Gentoo), and intuitive loadings that can be related to scatterplots in Figure X. Percent of total variance captured by the first and second principal components are very similar between `iris` and `penguins` (Figure X). 
+
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align = "center"}
+# Copied from Alison Hill's post! 
+
+### PENGUINS PCA: 
+penguin_recipe <-
+  recipe(~., data = penguins) %>% 
+  update_role(species, island, sex, new_role = "id") %>% 
+  step_naomit(all_predictors()) %>% 
+  step_normalize(all_predictors()) %>%
+  step_pca(all_predictors(), id = "pca") %>% 
+  prep()
+
+penguin_pca <- 
+  penguin_recipe %>% 
+  tidy(id = "pca") 
+
+penguin_percvar <- penguin_recipe %>% 
+  tidy(id = "pca", type = "variance") %>% 
+  dplyr::filter(terms == "percent variance") 
+
+# penguin_pca
+
+# Biplot: 
+
+# get pca loadings into wider format
+pca_wider <- penguin_pca %>% 
+  tidyr::pivot_wider(names_from = component, id_cols = terms)
+
+# define arrow style:
+arrow_style <- arrow(length = unit(.05, "inches"),
+                     type = "closed")
+
+# Make the biplot:
+pca_plot <-
+  juice(penguin_recipe) %>%
+  ggplot(aes(PC1, PC2)) +
+  geom_point(aes(color = species, shape = species), 
+             alpha = 0.8, 
+             size = 2) +
+  scale_colour_manual(values = c("darkorange","purple","cyan4")) 
+
+penguins_biplot <- pca_plot +
+  geom_segment(data = pca_wider,
+               aes(xend = PC1, yend = PC2), 
+               x = 0, 
+               y = 0, 
+               arrow = arrow_style) + 
+  geom_shadowtext(data = pca_wider,
+            aes(x = PC1, y = PC2, label = terms), 
+            nudge_x = c(0.3,0.3,1.0,0.8), 
+            nudge_y = c(-0.1,-0.2,0.1,-0.1),
+            size = 3, 
+            color = '#0A537D',
+            bg.color = "white") +
+  labs(title = "Penguins PCA biplot") +
+  theme(legend.position = "bottom")
+
+# For positioning (above): 
+# 1: bill_length
+# 2: bill_depth
+# 3: flipper length
+# 4: body mass
+
+penguin_screeplot <- penguin_percvar %>% 
+  ggplot(aes(x = component, y = value)) + 
+  geom_col(fill = "#b6dfe2") + 
+  xlim(c(0, 5)) + 
+  ylim(c(0,80)) +
+  ylab("% of total variance") +
+  labs(title = "Penguins PCA screeplot") +
+  geom_text(aes(label = round(value,2)), vjust=-0.25)
+
+### IRIS PCA: 
+iris_recipe <-
+  recipe(~., data = iris) %>% 
+  update_role(Species, new_role = "id") %>% 
+  step_normalize(all_predictors()) %>%
+  step_pca(all_predictors(), id = "pca") %>% 
+  prep()
+
+iris_pca <- 
+  iris_recipe %>% 
+  tidy(id = "pca") 
+
+# Biplot: 
+
+# get pca loadings into wider format
+iris_wider <- iris_pca %>% 
+  tidyr::pivot_wider(names_from = component, id_cols = terms)
+
+# define arrow style:
+arrow_style <- arrow(length = unit(.05, "inches"),
+                     type = "closed")
+
+# Make the biplot:
+iris_pca_plot <-
+  juice(iris_recipe) %>%
+  ggplot(aes(PC1, PC2)) +
+  geom_point(aes(color = Species, shape = Species), 
+             alpha = 0.8, 
+             size = 2) +
+  scale_colour_manual(values = c("darkorange","purple","cyan4")) 
+
+iris_biplot <- iris_pca_plot +
+  geom_segment(data = iris_wider,
+               aes(xend = PC1, yend = PC2), 
+               x = 0, 
+               y = 0, 
+               arrow = arrow_style) + 
+  geom_shadowtext(data = iris_wider,
+            aes(x = PC1, y = PC2, label = terms), 
+            nudge_x = c(0.3,0.3,0.7,0.6), 
+            nudge_y = c(-0.1,-0.2,0.1,-0.1),
+            size = 3, 
+            color = '#0A537D',
+            bg.color = "white") +
+  labs(title = "Iris PCA biplot") +
+  theme(panel.background = element_rect(fill = "gray90", color = "gray90"),
+        legend.position = "bottom")
+
+iris_percvar <- iris_recipe %>% 
+  tidy(id = "pca", type = "variance") %>% 
+  dplyr::filter(terms == "percent variance")
+
+iris_screeplot <- iris_percvar %>% 
+  ggplot(aes(x = component, y = value)) + 
+  geom_col(fill = "#b6dfe2") + 
+  xlim(c(0, 5)) + 
+  ylim(c(0,80)) +
+  ylab("% of total variance") +
+  labs(title = "Iris PCA screeplot") + 
+  geom_text(aes(label = round(value,2)), vjust=-0.25) +
+  theme(panel.background = element_rect(fill = "gray90", color = "gray90"))
+
+(penguins_biplot | iris_biplot)/(penguin_screeplot | iris_screeplot)
+
+ggsave(here("figures","pca_plots.png"), width = 8, height = 8)
+```
+
+### K-means clustering
+
+Unsupervised clustering by k-means is a common and popular entryway to machine learning and classification, and frequently employs the `iris` data for introductory examples (refs). The `penguins` data provides similar opportunities for demonstrating, and illustrating limitations of, k-means clustering. 
+
+#### k-means clustering: two variables
+
+First, we compare k-means clustering using two variables for each dataset: for `iris`, petal width and petal length, and for a subset only including male `penguins`, bill length and bill depth. For each, we designate three centroids (*k* = 3) since there are three species of both *Iris* and penguins. 
+
+Clustering by k-means with *Iris* petal dimension results in perfect separation for *Iris setosa* observations: all 50 *setosa* exist in a single cluster (cluster 1) with no *Iris virginica* or *versicolor* assigned to the cluster (Figure X, Table X). There is minimal species misclassification between the *versicolor* (cluster 2) and *versicolor* (cluster 3) species (Table X). 
+
+Similarly, Adélie penguins are highly separated from Chinstrap and Gentoo penguins by k-means clustering using only bill length and bill depth: of 73 Adélie penguins in the data, 70 are assigned to a single cluster (Cluster 2), and only 3 are assigned to the cluster containing most Gentoos (Cluster 3). No Chinstraps or Gentoos are assigned to Cluster 2 (Figure X). The distinction between Chinstraps and Gentoos is less clear, in agreement with overlap in bill dimensions between the species observed visually (Figure X). 
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align = "center"}
+# TWO VARIABLE k-means comparison
+# Male penguins: bill length vs. bill depth
+# Iris: petal length vs. petal width
+
+penguins_k <- penguins %>% 
+  filter(sex == "male") %>% 
+  select(species, bill_length_mm:body_mass_g) %>% 
+  drop_na()
+
+# Using bill_length & flipper_length
+# THIS ONE SHOWS *pretty* good clustering
+
+bills <- penguins_k %>% select(species, bill_length_mm, bill_depth_mm)
+
+set.seed(1967)
+kclust_bills <- kmeans(bills[,2:3], centers = 3, nstart = 20)
+# kclust_bills
+
+# Table of assigned clusters for penguins
+bills_class <- table(kclust_bills$cluster,bills$species)%>% 
+  as.data.frame() %>% 
+  rename(cluster = Var1, species = Var2, n = Freq) %>% 
+  pivot_wider(names_from = species, values_from = n)
+
+# Same for iris: 
+
+petals <- iris %>% select(Species, Petal.Length, Petal.Width)
+
+set.seed(1967)
+kclust_petals <- kmeans(petals[,2:3], centers = 3, nstart = 25)
+# kclust_petals
+
+# Table of assigned clusters for iris petals: 
+petal_class <- table(kclust_petals$cluster, petals$Species) %>% 
+  as.data.frame() %>% 
+  rename(cluster = Var1, Species = Var2, n = Freq) %>% 
+  pivot_wider(names_from = Species, values_from = n)
+
+bills_cluster <- cbind(bills, cluster_no = kclust_bills$cluster)
+
+penguins_kmeans <- ggplot(data = bills_cluster, aes(x = bill_length_mm, 
+                                     bill_depth_mm)) +
+  geom_text(aes(label=cluster_no, color = species), 
+                  size = 4) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  labs(title = "Penguins k-means clustering") +
+  theme(legend.position = "bottom")
+
+iris_cluster <-cbind(petals, cluster_no = kclust_petals$cluster)
+
+iris_kmeans <- ggplot(data = iris_cluster, aes(x = Petal.Length, y = Petal.Width)) +
+  geom_text(aes(label = cluster_no, color = Species), size = 4) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme(panel.background = element_rect(fill = "gray90", color = "gray90"),
+        legend.position = "bottom") +
+  labs(title = "Iris k-means clustering")
+
+(penguins_kmeans | iris_kmeans) 
+
+# Full table of cluster assignments: 
+combo_cluster <- cbind(bills_class, petal_class) %>% 
+  kable(caption = "Table X. Assigned k-means clusters for results shown in Figure X") %>% 
+  kable_styling(full_width = FALSE) %>% 
+  add_header_above(c("Penguin bill cluster assignments" = 4, "Iris petal cluster assignments" = 4)) %>% 
+  column_spec(c(5:8), background = "gainsboro")
+
+combo_cluster
+```
+#### k-means clustering: all numeric variables
+
+When all four numeric variables for each dataset are included in k-means clustering, *setosa* irises remain distinctly clustered apart from the other two iris species, but there is overlap across all penguin species (Table X). 
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.align = "center"}
+# FOUR VARIABLE k-means comparison
+
+penguins_k_full <- penguins %>% 
+  select(species, bill_length_mm:body_mass_g) %>% 
+  drop_na()
+
+set.seed(1967)
+kclust_penguins <- kmeans(penguins_k_full[,2:5], centers = 3, nstart = 20)
+
+
+# Table of assigned clusters for penguins
+penguins_class <- table(kclust_penguins$cluster,penguins_k_full$species)%>% 
+  as.data.frame() %>% 
+  rename(cluster = Var1, species = Var2, n = Freq) %>% 
+  pivot_wider(names_from = species, values_from = n)
+
+# penguins_class
+# Same for iris: 
+
+set.seed(1967)
+iris_k_full <- kmeans(iris[,1:4], centers = 3, nstart = 25)
+
+# Table of assigned clusters for iris petals: 
+iris_class <- table(iris_k_full$cluster, iris$Species) %>% 
+  as.data.frame() %>% 
+  rename(cluster = Var1, Species = Var2, n = Freq) %>% 
+  pivot_wider(names_from = Species, values_from = n)
+
+# iris_class
+
+# Full table of cluster assignments with all 4 numeric variables: 
+combo_cluster_full <- cbind(penguins_class, iris_class) %>% 
+  kable(caption = "Table X. Assigned k-means clusters for iris and penguins when including all four numeric variables for each") %>% 
+  kable_styling(full_width = FALSE) %>% 
+  add_header_above(c("Penguin cluster assignments" = 4, "Iris cluster assignments" = 4)) %>% 
+  column_spec(c(5:8), background = "gainsboro")
+
+combo_cluster_full
+```
 
 ## Penguin data access for non-R users
 
@@ -471,7 +646,140 @@ penguins %>%
   facet_wrap(~species)
 ```
 
-A Web of Science search reveals that Fisher's 1936 paper has been cited in 7,258 publications (as of June 2020), most often in journals publishing in fields of Computer Science (57% of 7,258 citing references), Mathematics (49%), and Engineering (29%) - most of which we expect are crediting Anderson's *Iris* data, and not Fisher's eugenics work. 
+Random, maybe include somewhere? A Web of Science search reveals that Fisher's 1936 paper has been cited in 7,258 publications (as of June 2020), most often in journals publishing in fields of Computer Science (57% of 7,258 citing references), Mathematics (49%), and Engineering (29%) - most of which we expect are crediting Anderson's *Iris* data, and not Fisher's eugenics work. 
+
+### Differences between groups 
+
+As in `iris`, multiple opportunities for comparisons between groups also exist in `penguins` (Figure X). Notably, more obvious separation between species exists in `iris` (Figure X E & F), compared to any between-species comparisons in `penguins` (Figure X A - D). 
+
+```{r, include = FALSE}
+
+# CHECK THIS ALL!!! 
+# ANOVA to see if flipper lengths are significantly different...(this says yes, but want other eyes)
+flipper_lm <- lm(flipper_length_mm ~ species, data = penguins)
+
+flipper_anova <- Anova(flipper_lm, type = "III")
+flipper_anova
+
+flip_aov <- aov(flipper_lm)
+summary(flip_aov)
+
+# TukeyHSD(flip_aov) all significantly different
+
+```
+
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+
+# Update this with an actual theme FFS and use '&' in patchwork
+
+iris_pw <- ggplot(iris, aes(x = Species, y = Petal.Width)) +
+  geom_boxplot(aes(color = Species),
+               show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme_bw() +
+  theme(plot.title.position = "plot") +
+  labs(x = "",
+       y = "Petal width (cm)") +
+  coord_flip()
+
+iris_pl <- ggplot(iris, aes(x = Species, y = Petal.Length)) +
+  geom_boxplot(aes(color = Species),
+               show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme_bw() +
+  theme(plot.title.position = "plot") +
+  labs(x = "",
+       y = "Petal length (cm)") +
+  coord_flip()
+
+iris_sl <- ggplot(iris, aes(x = Species, y = Sepal.Length)) +
+  geom_boxplot(aes(color = Species),
+               show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme_bw() +
+  theme(plot.title.position = "plot") +
+  labs(x = "",
+       y = "Sepal length (cm)") +
+  coord_flip()
+
+iris_sw <- ggplot(iris, aes(x = Species, y = Sepal.Width)) +
+  geom_boxplot(aes(color = Species),
+               show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme_bw() +
+  theme(plot.title.position = "plot") +
+  labs(x = "",
+       y = "Sepal width (cm)") +
+  coord_flip()
+
+penguins_flip <- penguins %>%
+  ggplot(aes(x = species, y = flipper_length_mm)) +
+  geom_boxplot(aes(color = species),
+               show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme_bw() +
+  labs(x = "",
+       y = "Flipper length (mm)") +
+  coord_flip()
+
+penguins_mass <- penguins %>%
+  ggplot(aes(x = species, y = body_mass_g)) +
+  geom_boxplot(aes(color = species),
+               show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme_bw() +
+  labs(x = "",
+       y = "Body mass (g)") +
+  coord_flip()
+
+penguins_bill_length <- penguins %>%
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_boxplot(aes(color = species),
+               show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme_bw()+
+  labs(x = "",
+       y = "Bill length (mm)") +
+  coord_flip()
+
+penguins_bill_depth <- penguins %>%
+  ggplot(aes(x = species, y = bill_depth_mm)) +
+  geom_boxplot(aes(color = species),
+               show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme_bw() +
+  labs(x = "",
+       y = "Bill depth (mm)") +
+  coord_flip()
+
+penguins_box <- penguins_flip / penguins_mass / penguins_bill_length / penguins_bill_depth + plot_layout(guides = "collect") + plot_annotation(title = "Penguins")
+
+iris_box <- iris_pw / iris_pl / iris_sw / iris_sl + plot_layout(guides = "collect")
+
+penguins_box | iris_box + plot_annotation(
+  title = 'Penguin and iris sizes',
+  subtitle = 'Penguin size measurements (left) and iris petal and sepal dimensions (right)',
+  tag_levels = 'A'
+)
+
+ggsave(here("figures","penguins_iris_box.png"), height = 7, width = 8)
+
+```
+
+### Hierarchical clustering?
+
+```{r}
+hc_iris <- hclust(dist(iris[, 1:4]))
+ggdendrogram(hc_iris, rotate = TRUE, size = 2)
+
+p_cc <- penguins %>% 
+  drop_na()
+
+hc_penguins <- hclust(dist(p_cc[, 3:6]))
+ggdendrogram(hc_penguins, rotate = TRUE, size = 2)
+
+```
 
 # End random other stuff
 
