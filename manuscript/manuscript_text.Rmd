@@ -553,7 +553,6 @@ See examples for working with penguins in Python here:
 ## Conclusion
 
 
-
 ## Appendix
 
 ### Appendix A: Variables in the raw data
