@@ -1,0 +1,96 @@
+---
+title: "k-means clustering with penguins"
+author: "Allison Horst"
+date: "6/26/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(tidymodels)
+library(palmerpenguins)
+library(GGally)
+library(shadowtext)
+library(NbClust)
+library(patchwork)
+library(kableExtra)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Following exactly along with: https://www.tidymodels.org/learn/statistics/k-means/
+
+The "old" way, using `kmeans()`:
+```{r}
+penguins_k <- penguins %>% 
+  filter(sex == "male") %>% 
+  select(species, bill_length_mm:body_mass_g) %>% 
+  drop_na()
+
+# Using bill_length & flipper_length
+# THIS ONE SHOWS *pretty* good clustering
+
+bills <- penguins_k %>% select(species, bill_length_mm, bill_depth_mm)
+
+set.seed(1967)
+kclust_bills <- kmeans(bills[,2:3], centers = 3, nstart = 20)
+kclust_bills
+
+# Table of assigned clusters for penguins
+bills_class <- table(kclust_bills$cluster,bills$species)%>% 
+  as.data.frame() %>% 
+  rename(cluster = Var1, species = Var2, n = Freq) %>% 
+  pivot_wider(names_from = species, values_from = n)
+
+# Same for iris: 
+
+petals <- iris %>% select(Species, Petal.Length, Petal.Width)
+
+set.seed(1967)
+kclust_petals <- kmeans(petals[,2:3], centers = 3, nstart = 25)
+kclust_petals
+
+# Table of assigned clusters for iris petals: 
+petal_class <- table(kclust_petals$cluster, petals$Species) %>% 
+  as.data.frame() %>% 
+  rename(cluster = Var1, Species = Var2, n = Freq) %>% 
+  pivot_wider(names_from = Species, values_from = n)
+
+```
+
+Visualizing it: 
+```{r}
+bills_cluster <- cbind(bills, cluster_no = kclust_bills$cluster)
+
+penguins_kmeans <- ggplot(data = bills_cluster, aes(x = bill_length_mm, 
+                                     bill_depth_mm)) +
+  geom_text(aes(label=cluster_no, color = species), 
+                  size = 4) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  labs(title = "Penguins k-means clustering") +
+  theme(legend.position = "bottom")
+
+iris_cluster <-cbind(petals, cluster_no = kclust_petals$cluster)
+
+iris_kmeans <- ggplot(data = iris_cluster, aes(x = Petal.Length, y = Petal.Width)) +
+  geom_text(aes(label = cluster_no, color = Species), size = 4) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  theme(panel.background = element_rect(fill = "gray90", color = "gray90"),
+        legend.position = "bottom") +
+  labs(title = "Iris k-means clustering")
+
+(penguins_kmeans | iris_kmeans) 
+
+# Full table of cluster assignments: 
+combo_cluster <- cbind(bills_class, petal_class) %>% 
+  kable() %>% 
+  kable_styling(full_width = FALSE)
+
+combo_cluster
+
+```
+## Using tidymodels? eeeeehhh we'll see 
+
+
+
+
+
