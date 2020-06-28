@@ -93,11 +93,7 @@ The `penguins` subset contains `r sum(complete.cases(penguins))` complete cases,
 
 ## Selected comparisons: `penguins` and `iris`
 
-<<<<<<< HEAD
 We feel that the `penguins` data is generally useful and approachable for statistics education, and that it is uniquely well-suited to replace `iris`. Comparisons presented here are representative examples, and are not exhaustive. Additional examples and tutorials are shared in the [user-contributed examples](https://allisonhorst.github.io/palmerpenguins/articles/articles/user_contributions.html) article on the **palmerpenguins** package website.  
-=======
-We feel that the `penguins` data is generally useful and approachable for statistics education, and that it is uniquely well-suited to replace `iris`. Comparisons presented here are representative examples, and are not exhaustive. Additional examples and tutorials are shared in the [user-contributed examples](https://allisonhorst.github.io/palmerpenguins/articles/articles/user_contributions.html) article on the package website.  
->>>>>>> 0181779cd02ccdc2413d2698c7029f18572f3757
 
 ### Structure and sample size 
 
@@ -152,11 +148,8 @@ iris_penguin_n %>%
   )
 ```
 
-<<<<<<< HEAD
+
 ### Overview comparison: numeric variables
-=======
-### Linear correlation & regression opportunities
->>>>>>> 0181779cd02ccdc2413d2698c7029f18572f3757
 
 Relationships, distributions and correlations can be explored for the four numeric variables in `iris` (sepal width and length, petal width and length) and `penguins` (flipper length, body mass, bill length and depth) in pair plots (Figure X A,B). 
 
@@ -243,8 +236,6 @@ iris_petal_scatter_all <- ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) +
 ggsave(here("figures","iris_penguins_scatter.png"), height = 6, width = 6)
 ```
 
-
-<<<<<<< HEAD
 ### Hypothesis testing
 
 ### Linear discriminant analysis? 
@@ -452,15 +443,14 @@ bills_cluster <- cbind(bills, cluster_no = kclust_bills$cluster)
 penguins_kmeans <- ggplot(data = bills_cluster, aes(x = bill_length_mm, 
                                      bill_depth_mm)) +
   geom_text(aes(label=cluster_no, color = species), 
-                  size = 4) +
-=======
-More obvious clustering (by penguin species) exists when comparing bill length and depth (Figure X), and the relationship also provides an opportunity to introduce & explore Simpson's Paradox. 
+                  size = 4)
+```
+
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 penguin_bill_scatter <- ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
   geom_point(aes(color = species), size = 2, alpha = 0.7) +
   theme_minimal() +
->>>>>>> 0181779cd02ccdc2413d2698c7029f18572f3757
   scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
   labs(title = "Penguins k-means clustering") +
   theme(legend.position = "bottom")
@@ -485,6 +475,7 @@ combo_cluster <- cbind(bills_class, petal_class) %>%
 
 combo_cluster
 ```
+
 #### k-means clustering: all numeric variables
 
 When all four numeric variables for each dataset are included in k-means clustering, *setosa* irises remain distinctly clustered apart from the other two iris species, but there is overlap across all penguin species (Table X). 
@@ -783,9 +774,6 @@ ggsave(here("figures","penguins_iris_box.png"), height = 7, width = 8)
 
 ```
 
-<<<<<<< HEAD
-### Hierarchical clustering?
-=======
 ### Hypothesis testing
 
 ### Principle components analysis
@@ -916,11 +904,8 @@ ggdendrogram(hc_penguins, rotate = TRUE, size = 2)
 
 ```
 
-<<<<<<< HEAD
-=======
 A Web of Science search reveals that Fisher's 1936 paper has been cited in 7,258 publications (as of June 2020), most often in journals publishing in fields of Computer Science (57% of 7,258 citing references), Mathematics (49%), and Engineering (29%) - most of which we expect are crediting Anderson's *Iris* data, and not Fisher's eugenics work. 
 
->>>>>>> 0181779cd02ccdc2413d2698c7029f18572f3757
 # End random other stuff
 
 ## Citations
