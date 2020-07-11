@@ -18,6 +18,7 @@ library(gt)
 library(GGally)
 library(recipes)
 library(shadowtext)
+library(broom)
 knitr::opts_chunk$set(echo = TRUE)
 
 theme_set(theme_minimal())
@@ -478,71 +479,80 @@ K-means with `penguins` and `iris` bill and petal dimensions, respectively, yiel
 # Penguins: Bill length vs. bill depth
 # Iris: petal length vs. petal width
 
-p_bills <- penguins %>% 
-  select(species, bill_length_mm, bill_depth_mm) %>% 
+pb_species <- penguins %>% 
+  select(species, starts_with("bill")) %>% 
   drop_na()
 
-p_bills_nospecies <- p_bills %>% 
+pb_nospecies <- pb_species %>% 
   select(-species) %>% 
-  scale() %>% 
-  as.data.frame()
-
+  recipe() %>% 
+  step_normalize(all_numeric()) %>% 
+  prep() %>% 
+  juice()
+  
 # Perform k-means on penguin bill dimensions (k = 3, w/20 centroid starts)
-p_bills_kmeans <- kmeans(p_bills_nospecies, centers = 3, nstart = 20)
-
-# Bind clusters to the data
-p_kmeans_clusters <- cbind(p_bills_nospecies, cluster = as.factor(p_bills_kmeans$cluster), species = p_bills$species)
+# save augmented data
+pb_clust <- 
+  pb_nospecies %>% 
+  kmeans(centers = 3, nstart = 20) %>% 
+  broom::augment(pb_species)
 
 # Plot clusters
-p_kmeans_gg <- ggplot(p_kmeans_clusters, aes(x = bill_length_mm, y = bill_depth_mm)) +
-  geom_text(aes(label = cluster, color = species)) +
+pb_kmeans_gg <- 
+  pb_clust %>% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_text(aes(label = .cluster, color = species),
+            key_glyph = draw_key_rect) +
   theme(legend.position = "bottom") +
   scale_color_manual(values = c("darkorange","darkorchid","cyan4"))
 
 # Get counts in each cluster by species
-p_cluster_counts <- p_kmeans_clusters %>% 
-  count(species, cluster) %>% 
-  pivot_wider(names_from = species, values_from = n) %>% 
-  arrange(cluster)
-
+pb_clust_n <- pb_clust %>% 
+  count(species, .cluster) %>% 
+  pivot_wider(names_from = species, values_from = n, names_sort = TRUE) %>% 
+  arrange(.cluster)
 ```
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.align = "center"}
 
-iris_petals <- iris %>% 
-  select(Species, Petal.Length, Petal.Width)
+ip_species <- iris %>% 
+  select(Species, starts_with("Petal"))
 
 # remove species factor & scale petal dimensions: 
-ip_nospecies <- iris_petals %>% 
+ip_nospecies <- ip_species %>% 
   select(-Species) %>% 
-  scale() %>% 
-  as.data.frame()
+  recipe() %>% 
+  step_normalize(all_numeric()) %>% 
+  prep() %>% 
+  juice()
 
 # Perform k-means on iris petal dimensions (k = 3, w/20 centroid starts)
-set.seed(1967)
-ip_kmeans <- kmeans(ip_nospecies, centers = 3, nstart = 20)
+ip_clust <- 
+  ip_nospecies %>% 
+  kmeans(centers = 3, nstart = 20) %>% 
+  broom::augment(ip_species)
 
-# Bind clusters to the data
-iris_kmeans_clusters <- cbind(ip_nospecies, cluster = as.factor(ip_kmeans$cluster), species = iris$Species)
-
-# Plot clusters: 
-iris_kmeans_gg <- ggplot(iris_kmeans_clusters, aes(x = Petal.Length, y = Petal.Width)) +
-  geom_text(aes(label = cluster, color = species)) +
-   theme(legend.position = "bottom",
+# Plot clusters
+ip_kmeans_gg <- 
+  ip_clust %>% 
+  ggplot(aes(x = Petal.Length, y = Petal.Width)) +
+  geom_text(aes(label = .cluster, color = Species), 
+            key_glyph = draw_key_rect) +
+  theme(legend.position = "bottom",
          panel.background = element_rect(fill = "gray92", color = "gray90")) +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4"))
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) 
 
 # Get counts in each cluster by species
-iris_cluster_counts <- iris_kmeans_clusters %>% 
-  count(species, cluster) %>% 
-  pivot_wider(names_from = species, values_from = n) %>% 
-  arrange(cluster)
+ip_clust_n <- ip_clust %>% 
+  count(Species, .cluster) %>% 
+  pivot_wider(names_from = Species, values_from = n, names_sort = TRUE) %>% 
+  arrange(.cluster)
 ```
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.align = "center"}
-(p_kmeans_gg | iris_kmeans_gg) + plot_annotation(tag_levels = "A")
+(pb_kmeans_gg | ip_kmeans_gg) + plot_annotation(tag_levels = "A")
 
-kmeans_2var_table <- cbind(p_cluster_counts, iris_cluster_counts) %>% 
+kmeans_2var_table <- cbind(pb_clust_n, ip_clust_n) %>% 
   kable() %>% 
   kable_styling(full_width = FALSE) %>% 
   column_spec(c(5:8), background = "gainsboro") %>% 
