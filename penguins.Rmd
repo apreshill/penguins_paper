@@ -1,0 +1,55 @@
+---
+title: Capitalized Title Here
+author:
+  - name: Allison Horst
+    affiliation: Bren School of Environmental Science and Management, University of California, Santa Barbara
+    address:
+    - line 1
+    - line 2
+    email:  ahorst@ucsb.edu
+  - name: Alison Hill
+    affiliation: RStudio, PBC
+    address:
+    - line 1
+    - line 2
+    email:  alison@rstudio.com
+  - name: Kristen Gorman
+    affiliation: University of Alaska Fairbanks College of Fisheries and Ocean Sciences
+    address:
+    - line 1
+    - line 2
+    email:  kbgorman@alaska.edu
+abstract: >
+  An abstract of less than 150 words.
+preamble: |
+  % Any extra LaTeX you need in the preamble
+output: rticles::rjournal_article
+---
+
+## Introduction
+
+Introductory section which may include references in parentheses
+[@R], or cite a reference such as @R in the text.
+
+## Section title in sentence case
+
+This section may contain a figure such as Figure \ref{fig:Rlogo}.
+
+```{r, Rlogo, echo=FALSE, fig.cap='The logo of R.', out.width='2in', fig.align='center', fig.pos='htbp'}
+knitr::include_graphics('palmerpenguins-logo.png')
+```
+
+## Another section
+
+There will likely be several sections, perhaps including code snippets, such as:
+
+```{r}
+x <- 1:10
+x
+```
+
+## Summary
+
+This file is only a basic article template. For full details of _The R Journal_ style and information on how to prepare your article for submission, see the [Instructions for Authors](https://journal.r-project.org/share/author-guide.pdf).
+
+\bibliography{RJreferences}
