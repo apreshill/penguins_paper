@@ -23,34 +23,20 @@ knitr::opts_chunk$set(echo = TRUE)
 theme_set(theme_minimal())
 ```
 
-# Authors (placeholder order TBD)
-
-Allison Horst^1^, Alison Hill^2^, Kristen Gorman^3^ 
-
-^1^ Bren School of Environmental Science and Management, University of California, Santa Barbara
-
-^2^ RStudio
-
-^3^ College of Fisheries and Ocean Sciences, University of Alaska Fairbanks
-
 # MANUSCRIPT CODE
-
-### See shared googledoc for MS text
 
 ## Structure and sample size 
 
-```{r, echo = FALSE}
+```{r, iris-table, echo = FALSE}
 set.seed(1900)
 sample_n(iris, 6) %>% 
-  kable() %>% 
-  kable_styling(full_width = FALSE)
+  kable(caption = "Six randomly selected rows from the iris dataset (of 150 total rows). Values for petal and sepal dimensions are in centimeters.")
 ```
 
-```{r, echo = FALSE}
+```{r, penguins-table}
 set.seed(1900)
 sample_n(penguins, 6) %>% 
-  kable() %>% 
-  kable_styling(full_width = FALSE)
+  kable(caption = "Six randomly selected rows from the penguins dataset (of 344 total rows). Units of the four numeric penguin measurements are included as suffixes in variable names, with \"_mm\" indicating millimeters, and \"_g\" indicating grams.")
 ```
 
 ```{r compare_counts, echo = FALSE}
@@ -60,6 +46,11 @@ iris_counts <- iris %>%
   rename(`Iris species` = Species)
 
 penguin_counts <- penguins %>% 
+  mutate(species = as.character(species)) %>% 
+  mutate(species = case_when(
+    species == "Adelie" ~ "Adélie", 
+    TRUE ~ species
+  )) %>% 
   mutate(sex = str_to_title(sex)) %>% 
   group_by(species, sex) %>% 
   tally() %>% 
@@ -69,26 +60,25 @@ penguin_counts <- penguins %>%
   rename(`Penguin species` = species)
 
 
-iris_penguin_n <- cbind(iris_counts, penguin_counts) %>% 
-  rename(`Sample size` = n)
+iris_penguin_n <- cbind(iris_counts, penguin_counts) %>%
+   rename(`Sample size` = n)
 
-iris_penguin_n %>%
-  gt() %>%
-  tab_spanner(
-    label = "Iris sample size (by species)",
-    columns = vars(`Iris species`, `Sample size`)
-  ) %>%
-  tab_spanner(
-    label = "Penguin sample size (by species and sex)",
-    columns = vars(`Penguin species`, `Female`, `Male`, `NA`)
-  ) %>%
-  tab_footnote(
-    footnote = "Note: Here, penguin sample sizes are split by species and sex, and could be further divided by island. NA column for penguins indicate observations where sex was not recorded.",
-    location = cells_column_labels(
-      columns = vars(`Penguin species`)
-    )
-  )
-
+ iris_penguin_n %>%
+   gt() %>%
+   tab_spanner(
+     label = "Iris sample size (by species)",
+     columns = vars(`Iris species`, `Sample size`)
+   ) %>%
+   tab_spanner(
+     label = "Penguin sample size (by species and sex)",
+     columns = vars(`Penguin species`, `Female`, `Male`, `NA`)
+   ) %>%
+   tab_footnote(
+     footnote = "Note: Here, penguin sample sizes are split by species and sex, and could be further divided by island and year. NA column for penguins indicate observations where sex was not recorded.",
+     location = cells_column_labels(
+       columns = vars(`Penguin species`)
+     )
+   )
 ```
 
 ## Overview comparison: numeric variables
