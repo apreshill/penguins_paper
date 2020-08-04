@@ -52,7 +52,7 @@ theme_set(theme_minimal())
 
 In 1935, American botanist Edgar Anderson measured petal and sepal structural dimensions (length and width) for 50 flowers from three Iris species: *Iris setosa*, *Iris versicolor*, and *Iris virginica* [@anderson_irises_1935]. The manageable but non-trivial size (5 variables and 150 total observations) and characteristics of the data make it amenable for introducing a wide range of statistical methods including data wrangling, visualization, regression, multivariate exploration, and machine learning. Anderson's *Iris* dataset is built into a number of software packages including the auto-installed datasets package in R [@r_core_team_r_2019], Python's scikit-learn machine learning library [@pedregosa_scikit-learn_2011], and the SAS Sashelp library (SAS Institute, Cary NC), which have facilitated widespread use of the data. As a result, eighty-five years after the data were initially published, Anderson’s *Iris* measurements are ubiquitous in statistics and data science course materials and tutorials. **Sounds great. Why consider replacing iris?**
 
-In 1936, one year after appearing in the Bulletin of the American Iris Society, Anderson’s *Iris* measurements were published by eugenicist and statistician Ronald A. Fisher in Annals of Eugenics [@fisher_use_1936]. Regardless of Anderson's initial motivation, the data today remain inextricably linked to Fisher’s eugenics research and are even commonly, if unfairly, referred to as "Fisher's iris data.” For example, an August 2020 search for “Iris flower data set” in Wikipedia returns an article beginning with “The iris flower data set or Fisher’s iris data…”, then later in the article: “It is sometimes called Anderson's Iris data set” [@wikipedia_iris_2020]. The *Iris* dataset is similarly credited to Fisher in statistical computing literature [@trendafilov_simple_2009, @wang_matlab_2015, @woods_how_2015, @chen_unsupervised_2018].
+In 1936, one year after being described in the Bulletin of the American Iris Society, Anderson’s *Iris* measurements were published in full by eugenicist and statistician Ronald A. Fisher in *Annals of Eugenics* [@fisher_use_1936]. Regardless of Anderson's initial motivation, the data today remain inextricably linked to Fisher’s eugenics research and are even commonly, if unfairly, referred to as "Fisher's iris data.” For example, an August 2020 search for “Iris flower data set” in Wikipedia returns an article beginning with “The iris flower data set or Fisher’s iris data…”, then later in the article: “It is sometimes called Anderson's Iris data set” [@wikipedia_iris_2020]. The *Iris* dataset is similarly credited to Fisher in statistical computing literature [@trendafilov_simple_2009, @wang_matlab_2015, @woods_how_2015, @chen_unsupervised_2018].
 
 There is recent momentum to address Fisher’s racist legacy in statistics. In June 2020, the Committee of Presidents of Statistical Societies’ R.A. Fisher Award and Lectureship was replaced by the Distinguished Achievement Award and Lectureship, to “advance a more just, equitable, diverse, and inclusive statistical community” [@noauthor_institute_2020]. Cambridge University’s Gonville and Caius College recently announced plans to remove a stained-glass window celebrating Fisher from a campus dining hall [@noauthor_sir_2020]. In the R community, there are calls to (1) address the *Iris* dataset's use in Fisher’s eugenics work, and/or (2) consider using a different dataset [@poisot_timothee_its_2020, @garrick_aden-buie_lets_2020]. This paper describes (2): a suitable alternative dataset for educators wanting to replace the *Iris* data in their teaching materials. 
 
@@ -85,7 +85,7 @@ R users can install the **palmerpenguins** package from CRAN by:
 
 Alternatively, the development version of the package can be installed from GitHub:
 
-      `remotes::install_github("allisonhorst/palmerpenguins")`. 
+      `remotes::install_github("allisonhorst/palmerpenguins")`
 
 Information, examples, and links to community-contributed materials are available on the **palmerpenguins** package website: https://allisonhorst.github.io/palmerpenguins/. 
 
@@ -152,14 +152,94 @@ Both **iris** and **penguins** are in tidy format [ref] with each column denotin
 
 Unlike **iris**, which contains only complete cases, the **penguins** dataset contains a small number of missing values (n~missing~ = 19, out of 2,752 total values). Missing values and unequal sample sizes are common in real-world data, and we believe add learning value to **penguins**. 
 
-### Continuous quantitative variables: overview
+```{r, echo = FALSE}
+iris_counts <- iris %>% 
+  count(Species) %>% 
+  rename(`Iris species` = Species)
 
-Distributions, relationships between variables and clustering can be visually explored between species for the four structural size measurements in **iris** (sepal width and length, petal width and length) and **penguins** (flipper length, body mass, bill length and depth). It is worth noting that the correlation coefficients presented are Pearson’s *r*, developed by and named for another famous eugenicist and statistician, Karl Pearson [ref].
+penguin_counts <- penguins %>% 
+  mutate(species = as.character(species)) %>% 
+  mutate(species = case_when(
+    species == "Adelie" ~ "Adélie", 
+    species == "Chinstrap" ~ "chinstrap",
+    species == "Gentoo" ~ "gentoo",
+    TRUE ~ species
+  )) %>% 
+  mutate(sex = str_to_title(sex)) %>% 
+  group_by(species, sex) %>% 
+  tally() %>% 
+  pivot_wider(names_from = sex, values_from = n) %>% 
+  replace_na(list(`NA` = 0)) %>% 
+  as.data.frame() %>% 
+  rename(`Penguin species` = species)
 
-### Linear correlation, regression, and Simpson’s Paradox
 
-There exist numerous opportunities to explore linear relationships and correlations in penguins and iris both within and across species (Figures 1 & 2). Here, we highlight one comparison that is uniquely similar: petal dimensions (petal length versus petal width) from iris, and penguin size (flipper length versus body mass) in penguins (Figure 3). The overall trend across all three species is approximately linear for both iris and penguins (Figure 3A,B). Teachers may encourage students to explore how simple linear regression results and predictions differ when the species variable is omitted (Figure 3A,B), compared to multiple linear regression with species included (Figure 3C,D).
-Notably, distinctions between species are clearer for iris petals - particularly, the much smaller petals for Iris setosa - compared to penguins, in which Adélie and chinstrap penguins are largely overlapping in body size (body mass and flipper length), and are both generally smaller than gentoos.
+iris_penguin_n <- cbind(iris_counts, penguin_counts) %>%
+   rename(`Sample size` = n)
+
+iris_penguin_n %>% 
+   kable(caption = "Grouped sample size for iris (by species; n = 150 total) and penguins (by species and sex; n = 344 total). Penguins can be further grouped by variables for island and study year.", align = "lclccc") %>% 
+  add_header_above(c("Iris sample size (by species)" = 2, "Penguin sample size (by species and sex)" = 4 ))
+
+```
+
+
+### Continuous quantitative variables
+
+Distributions, relationships between variables and clustering can be visually explored between species for the four structural size measurements in **penguins** (flipper length, body mass, bill length and depth; Figure \ref{fig:penguins-pairs}) and **iris** (sepal width and length, petal width and length; Figure \ref{fig:iris-pairs}).
+
+```{r, penguins-pairs, fig.cap = "Distribution and correlations for numeric variables in the penguins data (flipper length (mm), body mass, (g) bill length (mm) and bill depth (mm)) for the three observed species: gentoo (green, triangles); chinstrap (blue, circles); and Adélie (orange, squares). Correlations are Pearson's r (*p < 0.05; **p < 0.01; ***p < 0.001).", warning = FALSE, message = FALSE, echo = FALSE}
+penguin_pairs <- penguins %>%
+  mutate(species = as.character(species)) %>% 
+  mutate(species = case_when(
+    species == "Adelie" ~ "Adélie", 
+    TRUE ~ species
+  )) %>% 
+  select(species, where(is.numeric)) %>% 
+  ggpairs(aes(color = species, shape = species),
+          columns = c("flipper_length_mm", "body_mass_g", 
+                      "bill_length_mm", "bill_depth_mm"),
+          columnLabels = c("Flipper length (mm)","Body mass (g)", "Bill length (mm)", "Bill depth (mm)"),
+          upper = list(continuous = wrap("cor", size = 2.7, color = "black")),
+          lower = list(continuous = wrap(ggally_points, size = 1.3))) +
+  scale_fill_manual(values = c("#e59f00","#0072b2","#009e73")) +
+  scale_color_manual(values = c("#e59f00","#0072b2","#009e73")) +
+  scale_shape_manual(values = c(15,16,17)) +
+  theme_minimal() +
+  theme(
+        text = element_text(size = 9),
+        panel.grid.major = element_line(colour = NA),
+        panel.grid.minor = element_blank(),
+        panel.border = element_rect(color = "gray80", fill = NA)
+        )
+
+penguin_pairs
+```
+
+```{r, iris-pairs, fig.cap = "Distribution and correlations for numeric variables in the iris data (petal length (cm), petal width (cm), sepal length (cm) and sepal width (cm)) for the three included Iris species: setosa (light gray, circles); versicolor (dark gray, triangles); and virginica (black, squares). Correlations are Pearson's r (*p < 0.05; **p < 0.01; ***p < 0.001).", warning = FALSE, message = FALSE, echo = FALSE}
+iris_pairs <- iris %>%
+  ggpairs(aes(color = Species, shape = Species),
+          columns = c("Petal.Length", "Petal.Width", 
+                      "Sepal.Length", "Sepal.Width"),
+          columnLabels = c("Petal length (cm)","Petal width (cm)", "Sepal length (cm)", "Sepal width (cm)"),
+          upper = list(continuous = wrap("cor", size = 2.7, color = "black"))) +
+  scale_colour_manual(values = c("gray70","gray40","black")) +
+  scale_fill_manual(values = c("gray70","gray40","black")) +
+  theme_minimal() +
+  theme(
+        text = element_text(size = 9),
+        panel.grid.major = element_line(colour = NA),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill = "white", color = "gray80")
+        )
+
+iris_pairs
+
+```
+
+There exist numerous opportunities to explore linear relationships and correlations in **penguins** and **iris** both within and across species (Figures \ref{fig:penguins-pairs} & \ref{fig:iris-pairs}). Here, we highlight one comparison that is uniquely similar: petal dimensions (petal length versus petal width) from iris, and penguin size (flipper length versus body mass) in penguins (Figure 3). The overall trend across all three species is approximately linear for both iris and penguins (Figure 3A,B). Teachers may encourage students to explore how simple linear regression results and predictions differ when the species variable is omitted (Figure 3A,B), compared to multiple linear regression with species included (Figure 3C,D).
+
+Notably, distinctions between species are clearer for iris petals - particularly, the much smaller petals for *Iris setosa* - compared to penguins, in which Adélie and chinstrap penguins are largely overlapping in body size (body mass and flipper length), and are both generally smaller than gentoos.
 
 ### Penguins bonus: Simpson’s Paradox
 
@@ -181,7 +261,20 @@ K-means clustering with penguin bill dimensions and iris petal dimensions yields
 
 ## Discussion
 
-Here, we have shown that the **penguins** data, available in the **palmerpenguins** R package, can replace **iris** for a number of common use cases in data science and statistics education including exploratory data visualization, linear correlation and regression, PCA and clustering by k-means. In addition, teaching and learning opportunities in **penguins** are increased due to a greater number of variables, missing values, unequal sample sizes, and Simpson's paradox examples. 
+Educators have three options regarding **iris** use in course materials: 
+
+1. Use **iris** without addressing its use in Fisher's eugenics research
+2. Use **iris** *and* address its use in Fisher's eugenics research
+3. Replace **iris** with an alternative dataset offering similar teaching and learning opportunities
+
+Here, we have shown that structural size measurements for Palmer Archipelago *Pygoscelis* penguins, available as **penguins** in the **palmerpenguins** R package, can replace **iris** for a number of common use cases in data science and statistics education including exploratory data visualization, linear correlation and regression, PCA, and clustering by k-means. In addition, teaching and learning opportunities in **penguins** are increased due to a greater number of variables, missing values, unequal sample sizes, and Simpson's paradox examples. 
+
+The **iris** dataset is widespread today because it was employed by Fisher to advance statistical methods for eugenics research. While the *Irises* were described in Anderson's 1935 article in *The Bulletin of the American Iris Society* [@anderson_irises_1935], the measurements were published in full in Fisher's 1936 *Annals of Eugenics* publication [@fisher_use_1936] - a journal for which Fisher served as editor before becoming chair of the Department of Eugenics at University College London. 
+
+
+
+
+
 
 
 

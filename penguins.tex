@@ -47,19 +47,19 @@ Anderson's \emph{Iris} measurements are ubiquitous in statistics and
 data science course materials and tutorials. \textbf{Sounds great. Why
 consider replacing iris?}
 
-In 1936, one year after appearing in the Bulletin of the American Iris
-Society, Anderson's \emph{Iris} measurements were published by
-eugenicist and statistician Ronald A. Fisher in Annals of Eugenics
-\citep{fisher_use_1936}. Regardless of Anderson's initial motivation,
-the data today remain inextricably linked to Fisher's eugenics research
-and are even commonly, if unfairly, referred to as ``Fisher's iris
-data.'' For example, an August 2020 search for ``Iris flower data set''
-in Wikipedia returns an article beginning with ``The iris flower data
-set or Fisher's iris data\ldots{}'', then later in the article: ``It is
-sometimes called Anderson's Iris data set'' \citep{wikipedia_iris_2020}.
-The \emph{Iris} dataset is similarly credited to Fisher in statistical
-computing literature \citep[\citet{wang_matlab_2015},
-\citet{woods_how_2015},
+In 1936, one year after being described in the Bulletin of the American
+Iris Society, Anderson's \emph{Iris} measurements were published in full
+by eugenicist and statistician Ronald A. Fisher in \emph{Annals of
+Eugenics} \citep{fisher_use_1936}. Regardless of Anderson's initial
+motivation, the data today remain inextricably linked to Fisher's
+eugenics research and are even commonly, if unfairly, referred to as
+``Fisher's iris data.'' For example, an August 2020 search for ``Iris
+flower data set'' in Wikipedia returns an article beginning with ``The
+iris flower data set or Fisher's iris data\ldots{}'', then later in the
+article: ``It is sometimes called Anderson's Iris data set''
+\citep{wikipedia_iris_2020}. The \emph{Iris} dataset is similarly
+credited to Fisher in statistical computing literature
+\citep[\citet{wang_matlab_2015}, \citet{woods_how_2015},
 \citet{chen_unsupervised_2018}]{trendafilov_simple_2009}.
 
 There is recent momentum to address Fisher's racist legacy in
@@ -165,7 +165,7 @@ Alternatively, the development version of the package can be installed
 from GitHub:
 
 \begin{verbatim}
-  `remotes::install_github("allisonhorst/palmerpenguins")`. 
+  `remotes::install_github("allisonhorst/palmerpenguins")`
 \end{verbatim}
 
 Information, examples, and links to community-contributed materials are
@@ -318,36 +318,69 @@ Unlike \textbf{iris}, which contains only complete cases, the
 values and unequal sample sizes are common in real-world data, and we
 believe add learning value to \textbf{penguins}.
 
-\hypertarget{continuous-quantitative-variables-overview}{%
-\subsubsection{Continuous quantitative variables:
-overview}\label{continuous-quantitative-variables-overview}}
+\begin{Schunk}
+\begin{table}
+
+\caption{\label{tab:unnamed-chunk-1}Grouped sample size for iris (by species; n = 150 total) and penguins (by species and sex; n = 344 total). Penguins can be further grouped by variables for island and study year.}
+\centering
+\begin{tabular}[t]{l|c|l|c|c|c}
+\hline
+\multicolumn{2}{c|}{Iris sample size (by species)} & \multicolumn{4}{c}{Penguin sample size (by species and sex)} \\
+\cline{1-2} \cline{3-6}
+Iris species & Sample size & Penguin species & Female & Male & NA\\
+\hline
+setosa & 50 & Adélie & 73 & 73 & 6\\
+\hline
+versicolor & 50 & chinstrap & 34 & 34 & 0\\
+\hline
+virginica & 50 & gentoo & 58 & 61 & 5\\
+\hline
+\end{tabular}
+\end{table}
+
+\end{Schunk}
+
+\hypertarget{continuous-quantitative-variables}{%
+\subsubsection{Continuous quantitative
+variables}\label{continuous-quantitative-variables}}
 
 Distributions, relationships between variables and clustering can be
 visually explored between species for the four structural size
-measurements in \textbf{iris} (sepal width and length, petal width and
-length) and \textbf{penguins} (flipper length, body mass, bill length
-and depth). It is worth noting that the correlation coefficients
-presented are Pearson's \emph{r}, developed by and named for another
-famous eugenicist and statistician, Karl Pearson {[}ref{]}.
+measurements in \textbf{penguins} (flipper length, body mass, bill
+length and depth; Figure \ref{fig:penguins-pairs}) and \textbf{iris}
+(sepal width and length, petal width and length; Figure
+\ref{fig:iris-pairs}).
 
-\hypertarget{linear-correlation-regression-and-simpsons-paradox}{%
-\subsubsection{Linear correlation, regression, and Simpson's
-Paradox}\label{linear-correlation-regression-and-simpsons-paradox}}
+\begin{Schunk}
+\begin{figure}
+\includegraphics{penguins_files/figure-latex/penguins-pairs-1} \caption[Distribution and correlations for numeric variables in the penguins data (flipper length (mm), body mass, (g) bill length (mm) and bill depth (mm)) for the three observed species]{Distribution and correlations for numeric variables in the penguins data (flipper length (mm), body mass, (g) bill length (mm) and bill depth (mm)) for the three observed species: gentoo (green, triangles); chinstrap (blue, circles); and Adélie (orange, squares). Correlations are Pearson's r (*p < 0.05; **p < 0.01; ***p < 0.001).}\label{fig:penguins-pairs}
+\end{figure}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{figure}
+\includegraphics{penguins_files/figure-latex/iris-pairs-1} \caption[Distribution and correlations for numeric variables in the iris data (petal length (cm), petal width (cm), sepal length (cm) and sepal width (cm)) for the three included Iris species]{Distribution and correlations for numeric variables in the iris data (petal length (cm), petal width (cm), sepal length (cm) and sepal width (cm)) for the three included Iris species: setosa (light gray, circles); versicolor (dark gray, triangles); and virginica (black, squares). Correlations are Pearson's r (*p < 0.05; **p < 0.01; ***p < 0.001).}\label{fig:iris-pairs}
+\end{figure}
+\end{Schunk}
 
 There exist numerous opportunities to explore linear relationships and
-correlations in penguins and iris both within and across species
-(Figures 1 \& 2). Here, we highlight one comparison that is uniquely
-similar: petal dimensions (petal length versus petal width) from iris,
-and penguin size (flipper length versus body mass) in penguins (Figure
-3). The overall trend across all three species is approximately linear
-for both iris and penguins (Figure 3A,B). Teachers may encourage
-students to explore how simple linear regression results and predictions
-differ when the species variable is omitted (Figure 3A,B), compared to
-multiple linear regression with species included (Figure 3C,D). Notably,
-distinctions between species are clearer for iris petals - particularly,
-the much smaller petals for Iris setosa - compared to penguins, in which
-Adélie and chinstrap penguins are largely overlapping in body size (body
-mass and flipper length), and are both generally smaller than gentoos.
+correlations in \textbf{penguins} and \textbf{iris} both within and
+across species (Figures \ref{fig:penguins-pairs} \&
+\ref{fig:iris-pairs}). Here, we highlight one comparison that is
+uniquely similar: petal dimensions (petal length versus petal width)
+from iris, and penguin size (flipper length versus body mass) in
+penguins (Figure 3). The overall trend across all three species is
+approximately linear for both iris and penguins (Figure 3A,B). Teachers
+may encourage students to explore how simple linear regression results
+and predictions differ when the species variable is omitted (Figure
+3A,B), compared to multiple linear regression with species included
+(Figure 3C,D).
+
+Notably, distinctions between species are clearer for iris petals -
+particularly, the much smaller petals for \emph{Iris setosa} - compared
+to penguins, in which Adélie and chinstrap penguins are largely
+overlapping in body size (body mass and flipper length), and are both
+generally smaller than gentoos.
 
 \hypertarget{penguins-bonus-simpsons-paradox}{%
 \subsubsection{Penguins bonus: Simpson's
@@ -423,14 +456,41 @@ iris}\label{other-alternatives-to-iris}}
 \hypertarget{discussion}{%
 \subsection{Discussion}\label{discussion}}
 
-Here, we have shown that the \textbf{penguins} data, available in the
-\textbf{palmerpenguins} R package, can replace \textbf{iris} for a
-number of common use cases in data science and statistics education
+Educators have three options regarding \textbf{iris} use in course
+materials:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Use \textbf{iris} without addressing its use in Fisher's eugenics
+  research
+\item
+  Use \textbf{iris} \emph{and} address its use in Fisher's eugenics
+  research
+\item
+  Replace \textbf{iris} with an alternative dataset offering similar
+  teaching and learning opportunities
+\end{enumerate}
+
+Here, we have shown that structural size measurements for Palmer
+Archipelago \emph{Pygoscelis} penguins, available as \textbf{penguins}
+in the \textbf{palmerpenguins} R package, can replace \textbf{iris} for
+a number of common use cases in data science and statistics education
 including exploratory data visualization, linear correlation and
-regression, PCA and clustering by k-means. In addition, we feel that
-teaching and learning opportunities in \textbf{penguins} are increased
-due to a greater number of variables, missing values, unequal sample
-sizes, and Simpson's paradox examples.
+regression, PCA, and clustering by k-means. In addition, teaching and
+learning opportunities in \textbf{penguins} are increased due to a
+greater number of variables, missing values, unequal sample sizes, and
+Simpson's paradox examples.
+
+The \textbf{iris} dataset is widespread today because it was employed by
+Fisher to advance statistical methods for eugenics research. While the
+\emph{Irises} were described in Anderson's 1935 article in \emph{The
+Bulletin of the American Iris Society} \citep{anderson_irises_1935}, the
+measurements were published in full in Fisher's 1936 \emph{Annals of
+Eugenics} publication \citep{fisher_use_1936} - a journal for which
+Fisher served as editor before becoming chair of the Department of
+Eugenics at University College London.
 
 \hypertarget{conclusion}{%
 \subsection{Conclusion}\label{conclusion}}
