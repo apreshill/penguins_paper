@@ -200,10 +200,10 @@ penguin_pairs <- penguins %>%
           columns = c("flipper_length_mm", "body_mass_g", 
                       "bill_length_mm", "bill_depth_mm"),
           columnLabels = c("Flipper length (mm)","Body mass (g)", "Bill length (mm)", "Bill depth (mm)"),
-          upper = list(continuous = wrap("cor", size = 2.7, color = "black")),
+          upper = list(continuous = wrap("cor", size = 2.7)),
           lower = list(continuous = wrap(ggally_points, size = 1.3))) +
-  scale_fill_manual(values = c("#e59f00","#0072b2","#009e73")) +
-  scale_color_manual(values = c("#e59f00","#0072b2","#009e73")) +
+  scale_fill_manual(values = c("darkorange","#0072b2","#009e73")) +
+  scale_color_manual(values = c("darkorange","#0072b2","#009e73")) +
   scale_shape_manual(values = c(15,16,17)) +
   theme_minimal() +
   theme(
@@ -237,25 +237,147 @@ iris_pairs
 
 ```
 
-There exist numerous opportunities to explore linear relationships and correlations in **penguins** and **iris** both within and across species (Figures \ref{fig:penguins-pairs} & \ref{fig:iris-pairs}). Here, we highlight one comparison that is uniquely similar: petal dimensions (petal length versus petal width) from iris, and penguin size (flipper length versus body mass) in penguins (Figure 3). The overall trend across all three species is approximately linear for both iris and penguins (Figure 3A,B). Teachers may encourage students to explore how simple linear regression results and predictions differ when the species variable is omitted (Figure 3A,B), compared to multiple linear regression with species included (Figure 3C,D).
+There exist numerous opportunities to explore linear relationships and correlations in **penguins** and **iris** both within and across species (Figures \ref{fig:penguins-pairs} & \ref{fig:iris-pairs}). Here, we highlight one comparison that is uniquely similar: petal dimensions (petal length versus petal width) from **iris**, and penguin size (flipper length versus body mass) in **penguins** (\ref{fig:linear-example}). The overall trend across all three species is approximately linear for both **iris** and **penguins**. Teachers may encourage students to explore how simple linear regression results and predictions differ when the species variable is omitted, compared to multiple linear regression with species included (\ref{fig:linear-example}).
+
+
+```{r, linear-example, fig.cap = "Representative linear relationships for penguin flipper length (mm) and body mass (g) for Adélie (orange circles), chinstrap (blue triangles), and gentoo (green squares) penguins (A), and iris petal length (cm) and width (cm) for setosa (light gray circles), versicolor (dark gray triangles) and virginica (black squares) irises (B). Within-species linear model is visualized for each penguin or iris species.", echo = FALSE, out.width = '6in', fig.align='center', fig.pos='htbp'}
+
+knitr::include_graphics('fig/linear_example.png')
+
+```
 
 Notably, distinctions between species are clearer for iris petals - particularly, the much smaller petals for *Iris setosa* - compared to penguins, in which Adélie and chinstrap penguins are largely overlapping in body size (body mass and flipper length), and are both generally smaller than gentoos.
 
-### Penguins bonus: Simpson’s Paradox
+Simpson’s Paradox is a data phenomenon in which a trend observed between variables is reversed when data are pooled, omitting a meaningful variable. While often taught and discussed in statistics courses, finding a real-world and approachable example of Simpson’s paradox can be a challenge. Here, we show one (of several possible; see Figure \ref{fig:penguins-pairs}) Simpson’s Paradox examples in **penguins**: exploring bill dimensions with and without *species* included (Figure \ref{fig:simpsons}). When penguin *species* is omitted (Figure \ref{fig:simpsons} A), bill length and depth appear negatively correlated overall. The trend is reversed when *species* is included, revealing an obviously positive correlation between bill length and bill depth within species (Figure \ref{fig:simpsons} B).
 
-Simpson’s Paradox is a data phenomenon in which a trend observed between variables is reversed when data are pooled, omitting a meaningful variable. While often taught and discussed in statistics courses, finding a real-world and approachable example of Simpson’s paradox can be a challenge. Here, we show one (of several possible; see Figure XX) Simpson’s Paradox examples in **penguins**: exploring bill dimensions with and without *species* included (Figure XX). When penguin *species* is omitted (Figure XX), the bill length and depth appear negatively correlated overall. The trend is reversed when *species* is included, revealing a positive correlation between bill length and bill depth (Figure XX)
+```{r, simpsons, fig.cap = "Trends for penguin bill dimensions (bill length and bill depth, millimeters) if the ‘species’ variable is excluded (A) or included (B), illustrating Simpson’s Paradox. Note: linear regression for bill dimensions without including species in (A) is ill-advised; the linear trendline is only included to visualize trend reversal for Simpson’s Paradox when compared to (B).", echo = FALSE, out.width = '6in', fig.align='center', fig.pos='htbp'}
+
+knitr::include_graphics('fig/simpson_gg.png')
+
+```
 
 ### Principal component analysis
 
 Principal component analysis (PCA) is a dimensional reduction method commonly used to explore patterns in multivariate data. PCA tutorials frequently employ the **iris** dataset, which is useful for teaching the method due to multivariate normality, and clear, approachable outcomes for variable loadings and clustering. 
 
-A comparison of PCA with the four variables of structural size measurements in **penguins** and **iris** (both normalized prior to PCA) reveals highly similar results (Figure XX). For both datasets, one species is distinct (gentoo penguins, and setosa irises) while the other two species (chinstrap/Adélie and versicolor/virginica) appear somewhat overlapping in the first two principal components (Figure XX). Variance explained by each principal component (PC) is similar, particularly for PC1 and PC2: for **penguins**, 88.15% of total variance is captured by the first two PCs, compared to 95.81% for **iris**, with a similarly large percentage of variance captured by PC1 and PC2 in each (Figure XX).
+A comparison of PCA with the four variables of structural size measurements in **penguins** and **iris** (both normalized prior to PCA) reveals highly similar results (Figure \ref{fig:pca}). For both datasets, one species is distinct (gentoo penguins, and setosa irises) while the other two species (chinstrap/Adélie and versicolor/virginica) appear somewhat overlapping in the first two principal components (Figure \ref{fig:pca} A,B). Variance explained by each principal component (PC) is similar, particularly for PC1 and PC2: for **penguins**, 88.15% of total variance is captured by the first two PCs, compared to 95.81% for **iris**, with a similarly large percentage of variance captured by PC1 and PC2 in each (Figure \ref{fig:pca} C,D).
+
+```{r, pca, fig.cap = "Principal component analysis biplots and scree plots for structural size measurements in penguins (A,C) and iris (B,D), revealing similarities in multivariate patterns, variable loadings, and variance explained by each component. For penguins, variables are flipper length (mm), body mass (g), bill length (mm) and bill depth (mm); groups are visualized by species (Adélie = orange circles, chinstrap = blue triangles, gentoo = green squares). For iris, variables are petal length (cm), petal width (cm), sepal length (cm) and sepal width (cm); groups are visualized by species (setosa = light gray circles, versicolor = dark gray triangles, virginica = black squares). Values above scree plot columns (C,D) indicate percent of total variance explained by each of the four principal components.", echo = FALSE, out.width = '6in', fig.align='center', fig.pos='htbp'}
+
+knitr::include_graphics('fig/pca_plots.png')
+
+```
 
 ### K-means clustering
 
 Unsupervised clustering by k-means is a common and popular entryway to machine learning and classification, and frequently employs the **iris** data for introductory examples. The **penguins** data provides similar opportunities for introducing k-means clustering. For simplicity, we compare k-means clustering using only two variables for each dataset: for **iris**, petal width and petal length, and for **penguins**, bill length and bill depth. All variables are scaled prior to k-means. Three clusters (*k* = 3) are specified for each since there are three species of both *Iris* (*setosa*, *versicolor*, and *virginica*) and penguins (Adélie, chinstrap and gentoo).
 
-K-means clustering with penguin bill dimensions and iris petal dimensions yields largely distinct clusters each dominated by one species (Figure XX, Table XX). For iris petal dimensions, k-means yields a perfectly separated cluster (Cluster 1) containing all 50 setosa iris observations and zero misclassified virginica or versicolor irises (Table 4). While clustering is not perfectly distinct for any penguin species, each species is largely contained within a single cluster, with little overlap from the other two species. For example, considering Adélie penguins (orange observations in Figure 6A): 147 (out of 151) Adélie penguins are assigned to Cluster 1, zero are assigned to Cluster 2, and 4 are assigned to the chinstrap-dominated Cluster 3 (Table 4). Only 5 (of 68) chinstrap penguins and 1 (of 123) gentoo penguins are assigned to the Adélie-dominated Cluster 1 (Table 4). 
+K-means clustering with penguin bill dimensions and iris petal dimensions yields largely distinct clusters each dominated by one species (\ref{fig:kmeans}). For iris petal dimensions, k-means yields a perfectly separated cluster (Cluster 1) containing all 50 setosa iris observations and zero misclassified virginica or versicolor irises (Table 2). While clustering is not perfectly distinct for any penguin species, each species is largely contained within a single cluster, with little overlap from the other two species. For example, considering Adélie penguins (orange observations in Figure \ref{fig:kmeans} A): 147 (out of 151) Adélie penguins are assigned to Cluster 1, zero are assigned to Cluster 2, and 4 are assigned to the chinstrap-dominated Cluster 3 (Table 2). Only 5 (of 68) chinstrap penguins and 1 (of 123) gentoo penguins are assigned to the Adélie-dominated Cluster 1 (Table 2). 
+
+```{r, include = FALSE, echo = FALSE}
+# Including so kable table can be created here
+
+# TWO VARIABLE k-means comparison
+# Penguins: Bill length vs. bill depth
+# Iris: petal length vs. petal width
+
+pb_species <- penguins %>% 
+  select(species, starts_with("bill")) %>% 
+  drop_na()
+
+pb_nospecies <- pb_species %>% 
+  select(-species) %>% 
+  recipe() %>% 
+  step_normalize(all_numeric()) %>% 
+  prep() %>% 
+  juice()
+  
+# Perform k-means on penguin bill dimensions (k = 3, w/20 centroid starts)
+# save augmented data
+pb_clust <- 
+  pb_nospecies %>% 
+  kmeans(centers = 3, nstart = 20) %>% 
+  broom::augment(pb_species)
+
+# Plot clusters
+pb_kmeans_gg <- 
+  pb_clust %>% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_text(aes(label = .cluster, color = species),
+            key_glyph = draw_key_rect) +
+  scale_color_manual(values = c("darkorange","#0072b2","#009e73"))+
+  theme(legend.position = "bottom",
+         panel.border = element_rect(fill = NA, color = "gray70"))
+
+# Get counts in each cluster by species
+pb_clust_n <- pb_clust %>% 
+  count(species, .cluster) %>% 
+  pivot_wider(names_from = species, values_from = n, names_sort = TRUE) %>% 
+  arrange(.cluster)
+
+### Iris k-means
+
+ip_species <- iris %>% 
+  select(Species, starts_with("Petal"))
+
+# remove species factor & scale petal dimensions: 
+ip_nospecies <- ip_species %>% 
+  select(-Species) %>% 
+  recipe() %>% 
+  step_normalize(all_numeric()) %>% 
+  prep() %>% 
+  juice()
+
+# Perform k-means on iris petal dimensions (k = 3, w/20 centroid starts)
+ip_clust <- 
+  ip_nospecies %>% 
+  kmeans(centers = 3, nstart = 20) %>% 
+  broom::augment(ip_species)
+
+# Plot clusters
+ip_kmeans_gg <- 
+  ip_clust %>% 
+  ggplot(aes(x = Petal.Length, y = Petal.Width)) +
+  geom_text(aes(label = .cluster, color = Species), 
+            key_glyph = draw_key_rect) +
+  theme(legend.position = "bottom",
+         panel.border = element_rect(fill = NA, color = "gray70")) +
+  scale_color_manual(values = c("gray70","gray50","black")) 
+
+# Get counts in each cluster by species
+ip_clust_n <- ip_clust %>% 
+  count(Species, .cluster) %>% 
+  pivot_wider(names_from = Species, values_from = n, names_sort = TRUE) %>% 
+  arrange(.cluster)
+
+# Combine kmeans plots for penguins & iris
+(pb_kmeans_gg | ip_kmeans_gg) + plot_annotation(tag_levels = "A")
+
+# ggsave(here("fig","kmeans.png"), width = 8, height = 4.5)
+
+kmeans_2var_table <- cbind(pb_clust_n, ip_clust_n) %>% 
+  kable(caption = "Grouped sample size for iris (by species; n = 150 total) and penguins (by species and sex; n = 344 total). Penguins can be further grouped by variables for island and study year.", align = "lclccc") %>% 
+  kable_styling(full_width = FALSE) %>% 
+  column_spec(c(5:8), background = "gainsboro") %>% 
+  add_header_above(c("Penguins cluster assignments" = 4, "Iris cluster assignments" = 4))
+```
+
+```{r, kmeans, fig.cap = "K-means clustering outcomes for penguin bill dimensions (A) and iris petal dimensions (B). Numbers indicate the cluster to which an observation was assigned, revealing a high degree of separation between species for both penguins and iris.", echo = FALSE, out.width = '6in', fig.align='center', fig.pos='htbp'}
+
+knitr::include_graphics('fig/kmeans.png')
+```
+
+```{r, echo = FALSE}
+kmeans_2var_table <- cbind(pb_clust_n, ip_clust_n) %>% 
+  kable(col.names = c("Cluster", "Adélie", "chinstrap", "gentoo", "Cluster", "setosa", "versicolor", "virginica"),
+        caption = "K-means cluster assignments by species based on penguin bill length (mm) and depth (mm), and iris petal length (cm) and width (cm).", align = "cccccc") %>% 
+  kable_styling(full_width = FALSE) %>% 
+  add_header_above(c("Penguins cluster assignments" = 4, "Iris cluster assignments" = 4))
+
+kmeans_2var_table
+```
+
+
 
 ## Other alternatives to iris
 

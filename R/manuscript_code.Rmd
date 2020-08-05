@@ -79,48 +79,63 @@ iris_penguin_n <- cbind(iris_counts, penguin_counts) %>%
        columns = vars(`Penguin species`)
      )
    )
+ 
+ iris_penguin_n <- cbind(iris_counts, penguin_counts) %>%
+   rename(`Sample size` = n)
+ 
+ iris_penguin_n %>% 
+   kable() %>% 
+   add_header_above(c("Iris sample size (by species)" = 2, "Penguin sample size (by species and sex)" = 4 )) %>% 
+   kable_styling()
+
 ```
 
 ## Overview comparison: numeric variables
 
 ```{r, warning = FALSE, message = FALSE, echo = FALSE, fig.align = "center"}
-penguins %>%
+penguin_pairs <- penguins %>%
+  mutate(species = as.character(species)) %>% 
+  mutate(species = case_when(
+    species == "Adelie" ~ "Adélie", 
+    TRUE ~ species
+  )) %>% 
   select(species, where(is.numeric)) %>% 
   ggpairs(aes(color = species, shape = species),
           columns = c("flipper_length_mm", "body_mass_g", 
                       "bill_length_mm", "bill_depth_mm"),
           columnLabels = c("Flipper length (mm)","Body mass (g)", "Bill length (mm)", "Bill depth (mm)"),
-          upper = list(continuous = wrap("cor", size = 3))) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4")) +
-  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+          upper = list(continuous = wrap("cor", size = 2.7)),
+          lower = list(continuous = wrap(ggally_points, size = 1.3))) +
+  scale_fill_manual(values = c("darkorange","#0072b2","#009e73")) +
+  scale_color_manual(values = c("darkorange","#0072b2","#009e73")) +
   scale_shape_manual(values = c(15,16,17)) +
   theme_minimal() +
   theme(
-        text = element_text(size = 10, family = "Arial"),
+        text = element_text(size = 9),
         panel.grid.major = element_line(colour = NA),
         panel.grid.minor = element_blank(),
         panel.border = element_rect(color = "gray80", fill = NA)
         )
 
-ggsave(here("figures","penguins_ggpairs.png"), height = 5, width = 9)
+penguin_pairs
 
-iris %>%
-  ggpairs(aes(color = Species),
+iris_pairs <- iris %>%
+  ggpairs(aes(color = Species, shape = Species),
           columns = c("Petal.Length", "Petal.Width", 
                       "Sepal.Length", "Sepal.Width"),
           columnLabels = c("Petal length (cm)","Petal width (cm)", "Sepal length (cm)", "Sepal width (cm)"),
-          upper = list(continuous = wrap("cor", size = 3))) +
-  scale_colour_manual(values = c("darkorange","purple","cyan4")) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4")) +
+          upper = list(continuous = wrap("cor", size = 2.7, color = "black"))) +
+  scale_colour_manual(values = c("gray70","gray40","black")) +
+  scale_fill_manual(values = c("gray70","gray40","black")) +
   theme_minimal() +
   theme(
-        text = element_text(size = 10, family = "Arial"),
+        text = element_text(size = 9),
         panel.grid.major = element_line(colour = NA),
         panel.grid.minor = element_blank(),
-        panel.background = element_rect(fill = "gray90", color = "gray90")
+        panel.background = element_rect(fill = "white", color = "gray80")
         )
 
-ggsave(here("figures","iris_ggpairs.png"), height = 5, width = 9)
+iris_pairs
 
 ```
 
@@ -128,50 +143,69 @@ ggsave(here("figures","iris_ggpairs.png"), height = 5, width = 9)
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.align = "center"}
 
-penguin_flip_mass_scatter <- ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
-  geom_point(aes(color = species, shape = species), size = 1.5, alpha = 0.5) +
+penguin_flip_mass_scatter <- 
+  penguins %>% 
+  mutate(species = as.character(species)) %>% 
+  mutate(species = case_when(
+    species == "Adelie" ~ "Adélie", 
+    species == "Chinstrap" ~ "chinstrap",
+    species == "Gentoo" ~ "gentoo",
+    TRUE ~ species
+  )) %>%
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(aes(color = species, shape = species), size = 1.5) +
   geom_smooth(method = "lm", aes(group = species, color = species), se = FALSE, show.legend = FALSE) +
   theme_minimal() +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
-  theme(legend.position = "bottom") +
+  scale_color_manual(values = c("darkorange","#0072b2","#009e73")) +
+  theme(legend.position = c(0.2,0.85)) +
   labs(x = "Flipper length (mm)", 
        y = "Body mass (g)") +
   theme(plot.title.position = "plot",
-        panel.border = element_rect(fill = NA, color = "gray70"))
+        panel.grid = element_blank(),
+        panel.border = element_rect(fill = NA, color = "gray70"),
+        legend.title = element_blank())
 
 penguin_flip_mass_scatter_all <- ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
-  geom_point(color = "gray50", size = 1.5, alpha = 0.5) +
+  geom_point(color = "gray50", size = 1.5) +
   geom_smooth(method = "lm", se = FALSE, color = "black") +
   theme_minimal() +
   labs(x = "Flipper length (mm)", 
        y = "Body mass (g)") +
   theme(plot.title.position = "plot",
+        panel.grid = element_blank(),
         panel.border = element_rect(fill = NA, color = "gray70"))
 
 iris_petal_scatter <- ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) +
-  geom_point(aes(color = Species, size = Species, shape = Species), size = 1.5, alpha = 0.5) +
+  geom_point(aes(color = Species, size = Species, shape = Species), size = 1.5) +
   geom_smooth(aes(group = Species, color = Species), method = "lm", se = FALSE, show.legend = FALSE) +
   theme_minimal() +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
-  theme(legend.position = "bottom") +
+  scale_color_manual(values = c("gray70","gray40","black")) +
+  theme(legend.position = c(0.2, 0.85)) +
   labs(x = "Petal length (cm)",
        y = "Petal width (cm)") +
   theme(plot.title.position = "plot",
-        panel.background = element_rect(fill = "gray90", color = "gray90"))
+        panel.grid = element_blank(),
+        panel.background = element_rect(fill = NA, color = "gray70"),
+        legend.title = element_blank())
 
 iris_petal_scatter_all <- ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) +
-  geom_point(color = "gray50", size = 1.5, alpha = 0.5) +
+  geom_point(color = "gray50", size = 1.5) +
   geom_smooth(method = "lm", se = FALSE, color = "black") +
   theme_minimal() +
   labs(x = "Petal length (cm)",
        y = "Petal width (cm)") +
   theme(plot.title.position = "plot",
-        panel.background = element_rect(fill = "gray90", color = "gray90")) 
+        panel.grid = element_blank(),
+        panel.background = element_rect(fill = NA, color = "gray70")) 
 
-(penguin_flip_mass_scatter_all + iris_petal_scatter_all) / (penguin_flip_mass_scatter + iris_petal_scatter) + plot_annotation(tag_levels = 'A')
+linear_example <- (penguin_flip_mass_scatter + iris_petal_scatter) + plot_annotation(tag_levels = 'A')
 
-ggsave(here("figures","iris_penguins_scatter.png"), height = 6, width = 8)
+ggsave(here("fig","linear_example.png"), width = 6, height = 3)
+```
 
+## Simpson's Paradox
+
+```{r}
 # Simpson's Paradox example (bill dimensions)
 simpson_nospecies <- ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
   geom_point(color = "gray40", alpha = 0.6, size = 2) +
@@ -180,30 +214,38 @@ simpson_nospecies <- ggplot(data = penguins, aes(x = bill_length_mm, y = bill_de
   theme(panel.border = element_rect(fill = NA, color = "gray70")) +
   labs(x = "Bill length (mm)", y = "Bill depth (mm)")
 
-simpson_wspecies <- ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm, group = species)) +
-  geom_point(aes(color = species, shape = species), size = 2, alpha = 0.5) +
+simpson_wspecies <- 
+  penguins %>% 
+  mutate(species = as.character(species)) %>% 
+  mutate(species = case_when(
+    species == "Adelie" ~ "Adélie",
+    TRUE ~ species)
+    ) %>% 
+    ggplot(aes(x = bill_length_mm, y = bill_depth_mm, group = species)) +
+  geom_point(aes(color = species, shape = species), size = 2, alpha = 0.8) +
   geom_smooth(method = "lm", se = FALSE, aes(color = species)) +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  scale_color_manual(values = c("darkorange","#0072b2","#009e73")) +
   theme_minimal() +
-  theme(panel.border = element_rect(fill = NA, color = "gray70"),
-        legend.position = c(0.16,0.14)) +
+  theme(panel.border = element_rect(fill = NA, color = "gray70")) +
   labs(x = "Bill length (mm)", y = "Bill depth (mm)")
 
 simpson_gg <- (simpson_nospecies | simpson_wspecies) + plot_annotation(tag_levels = 'A')
 
-simpson_gg
-
-ggsave(here("figures","simpson_gg.png"), width = 8, height = 4)
+ggsave(here("fig","simpson_gg.png"), width = 8, height = 3.5)
 ```
 
 ## PCA
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align = "center"}
 # Copied from Alison Hill's post! 
-
 ### PENGUINS PCA: 
+
+# Omit year
+penguins_noyr <- penguins %>% 
+  select(-year)
+
 penguin_recipe <-
-  recipe(~., data = penguins) %>% 
+  recipe(~., data = penguins_noyr) %>% 
   update_role(species, island, sex, new_role = "id") %>% 
   step_naomit(all_predictors()) %>% 
   step_normalize(all_predictors()) %>%
@@ -219,25 +261,21 @@ penguin_percvar <- penguin_recipe %>%
   dplyr::filter(terms == "percent variance") 
 
 # penguin_pca
-
 # Biplot: 
-
 # get pca loadings into wider format
 pca_wider <- penguin_pca %>% 
   tidyr::pivot_wider(names_from = component, id_cols = terms)
-
 # define arrow style:
 arrow_style <- arrow(length = unit(.05, "inches"),
                      type = "closed")
-
 # Make the biplot:
 pca_plot <-
   juice(penguin_recipe) %>%
   ggplot(aes(PC1, PC2)) +
   geom_point(aes(color = species, shape = species), 
-             alpha = 0.5, 
+             alpha = 0.7, 
              size = 2) +
-  scale_colour_manual(values = c("darkorange","purple","cyan4")) 
+  scale_colour_manual(values = c("darkorange","#0072b2","#009e73")) 
 
 penguins_biplot <- pca_plot +
   geom_segment(data = pca_wider,
@@ -277,30 +315,24 @@ iris_recipe <-
   step_normalize(all_predictors()) %>%
   step_pca(all_predictors(), id = "pca") %>% 
   prep()
-
 iris_pca <- 
   iris_recipe %>% 
   tidy(id = "pca") 
-
 # Biplot: 
-
 # get pca loadings into wider format
 iris_wider <- iris_pca %>% 
   tidyr::pivot_wider(names_from = component, id_cols = terms)
-
 # define arrow style:
 arrow_style <- arrow(length = unit(.05, "inches"),
                      type = "closed")
-
 # Make the biplot:
 iris_pca_plot <-
   juice(iris_recipe) %>%
   ggplot(aes(PC1, PC2)) +
   geom_point(aes(color = Species, shape = Species), 
-             alpha = 0.5, 
+             alpha = 0.8, 
              size = 2) +
-  scale_colour_manual(values = c("darkorange","purple","cyan4")) 
-
+  scale_colour_manual(values = c("gray70","gray40","black")) 
 iris_biplot <- iris_pca_plot +
   geom_segment(data = iris_wider,
                aes(xend = PC1, yend = PC2), 
@@ -314,7 +346,7 @@ iris_biplot <- iris_pca_plot +
             size = 4, 
             color = "black",
             bg.color = "white") +
-  theme(panel.background = element_rect(fill = "gray90", color = "gray90"),
+  theme(panel.background = element_rect(fill = NA, color = "gray70"),
         legend.position = "bottom")
 
 iris_percvar <- iris_recipe %>% 
@@ -328,16 +360,17 @@ iris_screeplot <- iris_percvar %>%
   scale_y_continuous(limits = c(0,100), expand = c(0,0)) +
   ylab("% of total variance") +
   geom_text(aes(label = round(value,2)), vjust=-0.25) +
-  theme(panel.background = element_rect(fill = "gray90", color = "gray90"))
+  theme(panel.border = element_rect(color = "gray70", fill = NA))
 
 (penguins_biplot | iris_biplot) / (penguin_screeplot | iris_screeplot) + plot_annotation(tag_levels = 'A')
 
-ggsave(here("figures","pca_plots.png"), width = 8, height = 8)
+ggsave(here("fig","pca_plots.png"), width = 8, height = 8)
 ```
 
 ## K-means clustering
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align = "center"}
+
 # TWO VARIABLE k-means comparison
 # Penguins: Bill length vs. bill depth
 # Iris: petal length vs. petal width
@@ -366,17 +399,17 @@ pb_kmeans_gg <-
   ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
   geom_text(aes(label = .cluster, color = species),
             key_glyph = draw_key_rect) +
-  theme(legend.position = "bottom") +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4"))
+  scale_color_manual(values = c("darkorange","#0072b2","#009e73"))+
+  theme(legend.position = "bottom",
+         panel.border = element_rect(fill = NA, color = "gray70"))
 
 # Get counts in each cluster by species
 pb_clust_n <- pb_clust %>% 
   count(species, .cluster) %>% 
   pivot_wider(names_from = species, values_from = n, names_sort = TRUE) %>% 
   arrange(.cluster)
-```
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.align = "center"}
+### Iris k-means
 
 ip_species <- iris %>% 
   select(Species, starts_with("Petal"))
@@ -402,18 +435,21 @@ ip_kmeans_gg <-
   geom_text(aes(label = .cluster, color = Species), 
             key_glyph = draw_key_rect) +
   theme(legend.position = "bottom",
-         panel.background = element_rect(fill = "gray92", color = "gray90")) +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) 
+         panel.border = element_rect(fill = NA, color = "gray70")) +
+  scale_color_manual(values = c("gray70","gray50","black")) 
 
 # Get counts in each cluster by species
 ip_clust_n <- ip_clust %>% 
   count(Species, .cluster) %>% 
   pivot_wider(names_from = Species, values_from = n, names_sort = TRUE) %>% 
   arrange(.cluster)
-```
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.align = "center"}
+# Combine kmeans plots for penguins & iris
 (pb_kmeans_gg | ip_kmeans_gg) + plot_annotation(tag_levels = "A")
+
+ggsave(here("fig","kmeans.png"), width = 8, height = 4.5)
+
+
 
 kmeans_2var_table <- cbind(pb_clust_n, ip_clust_n) %>% 
   kable() %>% 

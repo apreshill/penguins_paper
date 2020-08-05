@@ -368,13 +368,24 @@ correlations in \textbf{penguins} and \textbf{iris} both within and
 across species (Figures \ref{fig:penguins-pairs} \&
 \ref{fig:iris-pairs}). Here, we highlight one comparison that is
 uniquely similar: petal dimensions (petal length versus petal width)
-from iris, and penguin size (flipper length versus body mass) in
-penguins (Figure 3). The overall trend across all three species is
-approximately linear for both iris and penguins (Figure 3A,B). Teachers
-may encourage students to explore how simple linear regression results
-and predictions differ when the species variable is omitted (Figure
-3A,B), compared to multiple linear regression with species included
-(Figure 3C,D).
+from \textbf{iris}, and penguin size (flipper length versus body mass)
+in \textbf{penguins} (\ref{fig:linear-example}). The overall trend
+across all three species is approximately linear for both \textbf{iris}
+and \textbf{penguins}. Teachers may encourage students to explore how
+simple linear regression results and predictions differ when the species
+variable is omitted, compared to multiple linear regression with species
+included (\ref{fig:linear-example}).
+
+\begin{Schunk}
+\begin{figure}[htbp]
+
+{\centering \includegraphics[width=6in]{fig/linear_example} 
+
+}
+
+\caption[Representative linear relationships for penguin flipper length (mm) and body mass (g) for Adélie (orange circles), chinstrap (blue triangles), and gentoo (green squares) penguins (A), and iris petal length (cm) and width (cm) for setosa (light gray circles), versicolor (dark gray triangles) and virginica (black squares) irises (B)]{Representative linear relationships for penguin flipper length (mm) and body mass (g) for Adélie (orange circles), chinstrap (blue triangles), and gentoo (green squares) penguins (A), and iris petal length (cm) and width (cm) for setosa (light gray circles), versicolor (dark gray triangles) and virginica (black squares) irises (B). Within-species linear model is visualized for each penguin or iris species.}\label{fig:linear-example}
+\end{figure}
+\end{Schunk}
 
 Notably, distinctions between species are clearer for iris petals -
 particularly, the much smaller petals for \emph{Iris setosa} - compared
@@ -382,21 +393,30 @@ to penguins, in which Adélie and chinstrap penguins are largely
 overlapping in body size (body mass and flipper length), and are both
 generally smaller than gentoos.
 
-\hypertarget{penguins-bonus-simpsons-paradox}{%
-\subsubsection{Penguins bonus: Simpson's
-Paradox}\label{penguins-bonus-simpsons-paradox}}
-
 Simpson's Paradox is a data phenomenon in which a trend observed between
 variables is reversed when data are pooled, omitting a meaningful
 variable. While often taught and discussed in statistics courses,
 finding a real-world and approachable example of Simpson's paradox can
-be a challenge. Here, we show one (of several possible; see Figure XX)
-Simpson's Paradox examples in \textbf{penguins}: exploring bill
-dimensions with and without \emph{species} included (Figure XX). When
-penguin \emph{species} is omitted (Figure XX), the bill length and depth
-appear negatively correlated overall. The trend is reversed when
-\emph{species} is included, revealing a positive correlation between
-bill length and bill depth (Figure XX)
+be a challenge. Here, we show one (of several possible; see Figure
+\ref{fig:penguins-pairs}) Simpson's Paradox examples in
+\textbf{penguins}: exploring bill dimensions with and without
+\emph{species} included (Figure \ref{fig:simpsons}). When penguin
+\emph{species} is omitted (Figure \ref{fig:simpsons} A), bill length and
+depth appear negatively correlated overall. The trend is reversed when
+\emph{species} is included, revealing an obviously positive correlation
+between bill length and bill depth within species (Figure
+\ref{fig:simpsons} B).
+
+\begin{Schunk}
+\begin{figure}[htbp]
+
+{\centering \includegraphics[width=6in]{fig/simpson_gg} 
+
+}
+
+\caption[Trends for penguin bill dimensions (bill length and bill depth, millimeters) if the ‘species’ variable is excluded (A) or included (B), illustrating Simpson’s Paradox]{Trends for penguin bill dimensions (bill length and bill depth, millimeters) if the ‘species’ variable is excluded (A) or included (B), illustrating Simpson’s Paradox. Note: linear regression for bill dimensions without including species in (A) is ill-advised; the linear trendline is only included to visualize trend reversal for Simpson’s Paradox when compared to (B).}\label{fig:simpsons}
+\end{figure}
+\end{Schunk}
 
 \hypertarget{principal-component-analysis}{%
 \subsubsection{Principal component
@@ -410,15 +430,27 @@ approachable outcomes for variable loadings and clustering.
 
 A comparison of PCA with the four variables of structural size
 measurements in \textbf{penguins} and \textbf{iris} (both normalized
-prior to PCA) reveals highly similar results (Figure XX). For both
-datasets, one species is distinct (gentoo penguins, and setosa irises)
-while the other two species (chinstrap/Adélie and versicolor/virginica)
-appear somewhat overlapping in the first two principal components
-(Figure XX). Variance explained by each principal component (PC) is
-similar, particularly for PC1 and PC2: for \textbf{penguins}, 88.15\% of
-total variance is captured by the first two PCs, compared to 95.81\% for
-\textbf{iris}, with a similarly large percentage of variance captured by
-PC1 and PC2 in each (Figure XX).
+prior to PCA) reveals highly similar results (Figure \ref{fig:pca}). For
+both datasets, one species is distinct (gentoo penguins, and setosa
+irises) while the other two species (chinstrap/Adélie and
+versicolor/virginica) appear somewhat overlapping in the first two
+principal components (Figure \ref{fig:pca} A,B). Variance explained by
+each principal component (PC) is similar, particularly for PC1 and PC2:
+for \textbf{penguins}, 88.15\% of total variance is captured by the
+first two PCs, compared to 95.81\% for \textbf{iris}, with a similarly
+large percentage of variance captured by PC1 and PC2 in each (Figure
+\ref{fig:pca} C,D).
+
+\begin{Schunk}
+\begin{figure}[htbp]
+
+{\centering \includegraphics[width=6in]{fig/pca_plots} 
+
+}
+
+\caption[Principal component analysis biplots and scree plots for structural size measurements in penguins (A,C) and iris (B,D), revealing similarities in multivariate patterns, variable loadings, and variance explained by each component]{Principal component analysis biplots and scree plots for structural size measurements in penguins (A,C) and iris (B,D), revealing similarities in multivariate patterns, variable loadings, and variance explained by each component. For penguins, variables are flipper length (mm), body mass (g), bill length (mm) and bill depth (mm); groups are visualized by species (Adélie = orange circles, chinstrap = blue triangles, gentoo = green squares). For iris, variables are petal length (cm), petal width (cm), sepal length (cm) and sepal width (cm); groups are visualized by species (setosa = light gray circles, versicolor = dark gray triangles, virginica = black squares). Values above scree plot columns (C,D) indicate percent of total variance explained by each of the four principal components.}\label{fig:pca}
+\end{figure}
+\end{Schunk}
 
 \hypertarget{k-means-clustering}{%
 \subsubsection{K-means clustering}\label{k-means-clustering}}
@@ -437,17 +469,51 @@ and gentoo).
 
 K-means clustering with penguin bill dimensions and iris petal
 dimensions yields largely distinct clusters each dominated by one
-species (Figure XX, Table XX). For iris petal dimensions, k-means yields
-a perfectly separated cluster (Cluster 1) containing all 50 setosa iris
+species (\ref{fig:kmeans}). For iris petal dimensions, k-means yields a
+perfectly separated cluster (Cluster 1) containing all 50 setosa iris
 observations and zero misclassified virginica or versicolor irises
-(Table 4). While clustering is not perfectly distinct for any penguin
+(Table 2). While clustering is not perfectly distinct for any penguin
 species, each species is largely contained within a single cluster, with
 little overlap from the other two species. For example, considering
-Adélie penguins (orange observations in Figure 6A): 147 (out of 151)
-Adélie penguins are assigned to Cluster 1, zero are assigned to Cluster
-2, and 4 are assigned to the chinstrap-dominated Cluster 3 (Table 4).
-Only 5 (of 68) chinstrap penguins and 1 (of 123) gentoo penguins are
-assigned to the Adélie-dominated Cluster 1 (Table 4).
+Adélie penguins (orange observations in Figure \ref{fig:kmeans} A): 147
+(out of 151) Adélie penguins are assigned to Cluster 1, zero are
+assigned to Cluster 2, and 4 are assigned to the chinstrap-dominated
+Cluster 3 (Table 2). Only 5 (of 68) chinstrap penguins and 1 (of 123)
+gentoo penguins are assigned to the Adélie-dominated Cluster 1 (Table
+2).
+
+\begin{Schunk}
+\begin{figure}[htbp]
+
+{\centering \includegraphics[width=6in]{fig/kmeans} 
+
+}
+
+\caption[K-means clustering outcomes for penguin bill dimensions (A) and iris petal dimensions (B)]{K-means clustering outcomes for penguin bill dimensions (A) and iris petal dimensions (B). Numbers indicate the cluster to which an observation was assigned, revealing a high degree of separation between species for both penguins and iris.}\label{fig:kmeans}
+\end{figure}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{table}
+
+\caption{\label{tab:unnamed-chunk-3}K-means cluster assignments by species based on penguin bill length (mm) and depth (mm), and iris petal length (cm) and width (cm).}
+\centering
+\begin{tabular}[t]{c|c|c|c|c|c|c|c}
+\hline
+\multicolumn{4}{c|}{Penguins cluster assignments} & \multicolumn{4}{c}{Iris cluster assignments} \\
+\cline{1-4} \cline{5-8}
+Cluster & Adélie & chinstrap & gentoo & Cluster & setosa & versicolor & virginica\\
+\hline
+1 & NA & 9 & 116 & 1 & NA & 48 & 4\\
+\hline
+2 & 4 & 54 & 6 & 2 & NA & 2 & 46\\
+\hline
+3 & 147 & 5 & 1 & 3 & 50 & NA & NA\\
+\hline
+\end{tabular}
+\end{table}
+
+\end{Schunk}
 
 \hypertarget{other-alternatives-to-iris}{%
 \subsection{Other alternatives to
