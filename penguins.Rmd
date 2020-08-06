@@ -1,32 +1,45 @@
 ---
-title: Palmer Archipelago Penguins Data in the palmerpenguins R Package - An Alternative to Anderson's *Irises*
+title: Palmer Archipelago Penguins Data in the palmerpenguins R Package - An Alternative
+  to Anderson's *Irises*
 author:
-  - name: Allison M. Horst
-    affiliation: Bren School of Environmental Science and Management
-    address:
-    - University of California, Santa Barbara
-    - Santa Barbara, CA 93106-5131
-    email:  ahorst@ucsb.edu
-  - name: Alison P. Hill
-    affiliation: RStudio, PBC
-    address:
-    - 250 Northern Ave
-    - Boston, MA 02210
-    email:  alison@rstudio.com
-  - name: Kristen B. Gorman
-    affiliation: University of Alaska Fairbanks College of Fisheries and Ocean Sciences
-    address:
-    - 2150 Koyukuk Drive
-    - 245 O’Neill Building
-    - Fairbanks, AK 99775-7220
-    email:  kbgorman@alaska.edu
-abstract: > 
-
- The famous *Iris* dataset, which exists in the base R **datasets** package as **iris**, is ubiquitous in statistics and data science education. While the **iris** measurements were originally collected by botanist Edgar Anderson, their use in Ronald A. Fisher's eugenics research has created momentum to address the dataset's racist use and/or replace **iris** with alternate data in teaching materials. Penguin morphological measurements for three species of *Pygoscelis* penguins that breed on islands throughout the Palmer Archipelago, Antarctica, provide an approachable, charismatic and near drop-in replacement for the **iris** data. Here, we introduce the **palmerpenguins** R package and describe the included **penguins** data. We directly compare the two datasets for selected analyses to demonstrate that R users, in particular teachers and learners currently using the **iris** data, can switch to the Palmer Archipelago penguins for many use cases including data wrangling and visualization, correlation, regression, hypothesis testing, multivariate analysis (e.g. PCA), cluster analysis and classification (e.g. by k-means). 
-
+- name: Allison M. Horst
+  affiliation: Bren School of Environmental Science and Management
+  address:
+  - University of California, Santa Barbara
+  - Santa Barbara, CA 93106-5131
+  email: ahorst@ucsb.edu
+- name: Alison P. Hill
+  affiliation: RStudio, PBC
+  address:
+  - 250 Northern Ave
+  - Boston, MA 02210
+  email: alison@rstudio.com
+- name: Kristen B. Gorman
+  affiliation: University of Alaska Fairbanks College of Fisheries and Ocean Sciences
+  address:
+  - 2150 Koyukuk Drive
+  - 245 O’Neill Building
+  - Fairbanks, AK 99775-7220
+  email: kbgorman@alaska.edu
+abstract: "\nThe famous *Iris* dataset, which exists in the base R **datasets** package
+  as **iris**, is ubiquitous in statistics and data science education. While the **iris**
+  measurements were originally collected by botanist Edgar Anderson, their use in
+  Ronald A. Fisher's eugenics research has created momentum to address the dataset's
+  racist use and/or replace **iris** with alternate data in teaching materials. Penguin
+  morphological measurements for three species of *Pygoscelis* penguins that breed
+  on islands throughout the Palmer Archipelago, Antarctica, provide an approachable,
+  charismatic and near drop-in replacement for the **iris** data. Here, we introduce
+  the **palmerpenguins** R package and describe the included **penguins** data. We
+  directly compare the two datasets for selected analyses to demonstrate that R users,
+  in particular teachers and learners currently using the **iris** data, can switch
+  to the Palmer Archipelago penguins for many use cases including data wrangling and
+  visualization, correlation, regression, hypothesis testing, multivariate analysis
+  (e.g. PCA), cluster analysis and classification (e.g. by k-means). \n"
+output:
+  bookdown::pdf_book:
+    base_format: rticles::rjournal_article
 preamble: |
   % Any extra LaTeX you need in the preamble
-output: rticles::rjournal_article
 ---
 
 ```{r setup, include=FALSE}
