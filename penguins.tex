@@ -6,24 +6,25 @@ Alternative to Anderson's \emph{Irises}}
 \maketitle
 
 \abstract{%
-The famous \emph{Iris} dataset, which exists in the base R
-\textbf{datasets} package as \textbf{iris}, is ubiquitous in statistics
-and data science education. While the \textbf{iris} measurements were
-originally collected by botanist Edgar Anderson, their use in Ronald A.
-Fisher's eugenics research has created momentum to address the dataset's
-racist use and/or replace \textbf{iris} with alternate data in teaching
-materials. Penguin morphological measurements for three species of
-\emph{Pygoscelis} penguins that breed on islands throughout the Palmer
-Archipelago, Antarctica, provide an approachable, charismatic and near
-drop-in replacement for the \textbf{iris} data. Here, we introduce the
-\textbf{palmerpenguins} R package and describe the included
-\textbf{penguins} data. We directly compare the two datasets for
-selected analyses to demonstrate that R users, in particular teachers
-and learners currently using the \textbf{iris} data, can switch to the
-Palmer Archipelago penguins for many use cases including data wrangling
-and visualization, correlation, regression, hypothesis testing,
-multivariate analysis (e.g.~PCA), cluster analysis and classification
-(e.g.~by k-means).
+Edgar Anderson's famous 1935 \emph{Iris} dataset, which exists in the
+base R \textbf{datasets} package as \textbf{iris}, is ubiquitous in
+statistics and data science education. Due to a lack of metadata,
+non-intuitive variables (e.g.~Sepal.Width), its publication in (and
+inextricable connection with) Fisher's 1936 paper in \emph{Annals of
+Eugenics}, and perfect structure (e.g.~no missing values)
+unrepresentative of most real-world environmental data, a modern
+alternative to \textbf{iris} is needed. Penguin morphological
+measurements for three species of \emph{Pygoscelis} penguins that breed
+on islands throughout the Palmer Archipelago, Antarctica, provide an
+approachable, charismatic and near drop-in replacement for the
+\textbf{iris} data. Here, we introduce the \textbf{palmerpenguins} R
+package and describe the included \textbf{penguins} data. We directly
+compare the two datasets for selected analyses to demonstrate that R
+users, in particular teachers and learners currently using the
+\textbf{iris} data, can switch to the Palmer Archipelago penguins for
+many use cases including data wrangling and visualization, correlation,
+regression, hypothesis testing, multivariate analysis (e.g.~PCA),
+cluster analysis and classification (e.g.~by k-means).
 }
 
 \hypertarget{introduction}{%
@@ -43,72 +44,74 @@ Python's scikit-learn machine learning library
 \citep{pedregosa_scikit-learn_2011}, and the SAS Sashelp library (SAS
 Institute, Cary NC), which have facilitated widespread use of the data.
 As a result, eighty-five years after the data were initially published,
-Anderson's \emph{Iris} measurements are ubiquitous in statistics and
-data science course materials and tutorials. \textbf{Sounds great. Why
-consider replacing iris?}
+Anderson's \emph{Iris} measurements are ubiquitous in statistics,
+computational methods, and data science courses and materials.
 
-In 1936, one year after being described in the Bulletin of the American
-Iris Society, Anderson's \emph{Iris} measurements were published in full
-by eugenicist and statistician Ronald A. Fisher in \emph{Annals of
-Eugenics} \citep{fisher_use_1936}. Regardless of Anderson's initial
-motivation, the data today remain inextricably linked to Fisher's
-eugenics research and are even commonly, if unfairly, referred to as
-``Fisher's iris data.'' For example, an August 2020 search for ``Iris
-flower data set'' in Wikipedia returns an article beginning with ``The
-iris flower data set or Fisher's iris data\ldots{}'', then later in the
-article: ``It is sometimes called Anderson's Iris data set''
-\citep{wikipedia_iris_2020}. The \emph{Iris} dataset is similarly
-credited to Fisher in statistical computing literature
-\citep[\citet{wang_matlab_2015}, \citet{woods_how_2015},
-\citet{chen_unsupervised_2018}]{trendafilov_simple_2009}.
-
-There is recent momentum to address Fisher's racist legacy in
-statistics. In June 2020, the Committee of Presidents of Statistical
-Societies' R.A. Fisher Award and Lectureship was replaced by the
-Distinguished Achievement Award and Lectureship, to ``advance a more
-just, equitable, diverse, and inclusive statistical community''
-\citep{noauthor_institute_2020}. Cambridge University's Gonville and
-Caius College recently announced plans to remove a stained-glass window
-celebrating Fisher from a campus dining hall \citep{noauthor_sir_2020}.
-In the R community, there are calls to (1) address the \emph{Iris}
-dataset's use in Fisher's eugenics work, and/or (2) consider using a
-different dataset
-\citep[\citet{garrick_aden-buie_lets_2020}]{poisot_timothee_its_2020}.
-This paper describes (2): a suitable alternative dataset for educators
-wanting to replace the \emph{Iris} data in their teaching materials.
-
-Considering \emph{Iris} data usage in data science and statistics
-materials, we established the following criteria for a suitable
-replacement dataset:
+There are several reasons that practitioners and educators may want to
+retire Anderson's \emph{Iris} dataset in modern data science materials,
+including:
 
 \begin{itemize}
 \tightlist
 \item
-  Available by appropriate license
+  Anderson's \emph{Iris} dataset entirely lacks metadata, limiting
+  meaningful interpretation and discussion of research methods,
+  analyses, and outcomes
 \item
-  Features intuitive subjects and variables understandable to learners
-  across fields
+  Two of its five variables, \texttt{Sepal.Width} and
+  \texttt{Sepal.Length}, are not intuitive to most users
+\item
+  In 1936, the \emph{Iris} data were published by eugenicist R.A. Fisher
+  in \emph{Annals of Eugenics}, and are now inextricably linked to
+  Fisher's eugenics work; in fact, the dataset is commonly referred to
+  as \emph{Fisher's Iris data}
+\item
+  The \emph{Iris} dataset contains only complete cases (i.e.~no missing
+  values) and equal sample sizes (\emph{n} = 50 for each \emph{Iris}
+  species) - more perfect than real-world datasets learners are likely
+  to encounter ``in the wild''
+\item
+  The single categorical variable (\texttt{Species}) limits options for
+  analyses
+\end{itemize}
+
+Given these motivations to retire \emph{Iris}, we sought to identify,
+then make readily available, a suitable alternative dataset. Considering
+\emph{Iris} usage in data science and statistics materials, we
+established the following criteria for a suitable alternative:
+
+\begin{itemize}
+\tightlist
+\item
+  Available by appropriate license (ideally, CC0 ``no rights reserved'')
+\item
+  Features intuitive subjects and variables that are interesting and
+  understandable to learners across fields
+\item
+  Complete metadata and documentation
 \item
   Manageable (but not trivial) in size
 \item
   Minimal data cleaning and pre-processing required for most analyses
 \item
-  Real-world (not manufactured) data
+  Real-world (not manufactured), modern data
 \item
   Similar opportunities for teaching and learning R, data science, and
   statistical skills
+\item
+  Can easily replace \emph{Iris} for most use cases
 \end{itemize}
 
 Here, we describe an alternative to Anderson's \emph{Iris} data that
-largely satisfies these criteria: an approachable and charismatic
-dataset containing real-world morphological data for three
+largely satisfies these criteria: a refreshing, approachable and
+charismatic dataset containing real-world morphological data for three
 \emph{Pygoscelis} penguin species that breed throughout the Western
 Antarctic Peninsula region, made available through the Long-Term
 Ecological Research Network (US LTER). By comparing data structure,
 size, and a range of analyses side-by-side for the two datasets, we
-demonstrate that the Palmer Archipelago penguin measurements can replace
-Anderson's \emph{Iris} data for many use cases in statistics and data
-science education.
+demonstrate that the Palmer Archipelago penguin measurements are an
+ideal substitute for Anderson's \emph{Iris} data for many use cases in
+statistics and data science education.
 
 \hypertarget{data-source}{%
 \subsection{Data source}\label{data-source}}
@@ -504,62 +507,29 @@ gentoo penguins are assigned to the Adélie-dominated Cluster 1 (Table
 \cline{1-4} \cline{5-8}
 Cluster & Adélie & chinstrap & gentoo & Cluster & setosa & versicolor & virginica\\
 \hline
-1 & NA & 9 & 116 & 1 & NA & 48 & 4\\
+1 & 4 & 54 & 6 & 1 & 50 & NA & NA\\
 \hline
-2 & 4 & 54 & 6 & 2 & NA & 2 & 46\\
+2 & 147 & 5 & 1 & 2 & NA & 48 & 4\\
 \hline
-3 & 147 & 5 & 1 & 3 & 50 & NA & NA\\
+3 & NA & 9 & 116 & 3 & NA & 2 & 46\\
 \hline
 \end{tabular}
 \end{table}
 
 \end{Schunk}
 
-\hypertarget{other-alternatives-to-iris}{%
-\subsection{Other alternatives to
-iris}\label{other-alternatives-to-iris}}
-
-\hypertarget{discussion}{%
-\subsection{Discussion}\label{discussion}}
-
-Educators have three options regarding \textbf{iris} use in course
-materials:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Use \textbf{iris} without addressing its use in Fisher's eugenics
-  research
-\item
-  Use \textbf{iris} \emph{and} address its use in Fisher's eugenics
-  research
-\item
-  Replace \textbf{iris} with an alternative dataset offering similar
-  teaching and learning opportunities
-\end{enumerate}
+\hypertarget{conclusion}{%
+\subsection{Conclusion}\label{conclusion}}
 
 Here, we have shown that structural size measurements for Palmer
 Archipelago \emph{Pygoscelis} penguins, available as \textbf{penguins}
-in the \textbf{palmerpenguins} R package, can replace \textbf{iris} for
-a number of common use cases in data science and statistics education
-including exploratory data visualization, linear correlation and
-regression, PCA, and clustering by k-means. In addition, teaching and
-learning opportunities in \textbf{penguins} are increased due to a
-greater number of variables, missing values, unequal sample sizes, and
-Simpson's paradox examples.
-
-The \textbf{iris} dataset is widespread today because it was employed by
-Fisher to advance statistical methods for eugenics research. While the
-\emph{Irises} were described in Anderson's 1935 article in \emph{The
-Bulletin of the American Iris Society} \citep{anderson_irises_1935}, the
-measurements were published in full in Fisher's 1936 \emph{Annals of
-Eugenics} publication \citep{fisher_use_1936} - a journal for which
-Fisher served as editor before becoming chair of the Department of
-Eugenics at University College London.
-
-\hypertarget{conclusion}{%
-\subsection{Conclusion}\label{conclusion}}
+in the \textbf{palmerpenguins} R package, offer a near drop-in
+replacement for \textbf{iris} in a number of common use cases for data
+science and statistics education including exploratory data
+visualization, linear correlation and regression, PCA, and clustering by
+k-means. In addition, teaching and learning opportunities in
+\textbf{penguins} are increased due to a greater number of variables,
+missing values, unequal sample sizes, and Simpson's paradox examples.
 
 \hypertarget{appendix}{%
 \subsection{Appendix}\label{appendix}}
