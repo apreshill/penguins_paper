@@ -35,50 +35,42 @@ structural dimensions (length and width) for 50 flowers from three Iris
 species: \emph{Iris setosa}, \emph{Iris versicolor}, and \emph{Iris
 virginica} \citep{anderson_irises_1935}. The manageable but non-trivial
 size (5 variables and 150 total observations) and characteristics of the
-data make it amenable for introducing a wide range of statistical
-methods including data wrangling, visualization, regression,
-multivariate exploration, and machine learning. Anderson's \emph{Iris}
-dataset is built into a number of software packages including the
-auto-installed datasets package in R \citep{r_core_team_r_2019},
-Python's scikit-learn machine learning library
-\citep{pedregosa_scikit-learn_2011}, and the SAS Sashelp library (SAS
-Institute, Cary NC), which have facilitated widespread use of the data.
-As a result, eighty-five years after the data were initially published,
-Anderson's \emph{Iris} measurements are ubiquitous in statistics,
-computational methods, and data science courses and materials.
+data, including linear relationships and multivariate normality, make it
+amenable for introducing a wide range of statistical methods including
+data wrangling, visualization, regression, multivariate exploration, and
+machine learning. Anderson's \emph{Iris} dataset is built into a number
+of software packages including the auto-installed datasets package in R
+\citep{r_core_team_r_2019}, Python's scikit-learn machine learning
+library \citep{pedregosa_scikit-learn_2011}, and the SAS Sashelp library
+(SAS Institute, Cary NC), which have facilitated widespread use of the
+data. As a result, eighty-five years after the data were initially
+published, Anderson's \emph{Iris} measurements are ubiquitous in
+statistics, computational methods, and data science courses and
+materials.
 
-There are several reasons that practitioners and educators may want to
-retire Anderson's \emph{Iris} dataset in modern data science materials,
-including:
-
-\begin{itemize}
-\tightlist
-\item
-  Anderson's \emph{Iris} dataset entirely lacks metadata, limiting
-  meaningful interpretation and discussion of research methods,
-  analyses, and outcomes
-\item
-  Two of its five variables, \texttt{Sepal.Width} and
-  \texttt{Sepal.Length}, are not intuitive to most users
-\item
-  In 1936, the \emph{Iris} data were published by eugenicist R.A. Fisher
-  in \emph{Annals of Eugenics}, and are now inextricably linked to
-  Fisher's eugenics work; in fact, the dataset is commonly referred to
-  as \emph{Fisher's Iris data}
-\item
-  The \emph{Iris} dataset contains only complete cases (i.e.~no missing
-  values) and equal sample sizes (\emph{n} = 50 for each \emph{Iris}
-  species) - more perfect than real-world datasets learners are likely
-  to encounter ``in the wild''
-\item
-  The single categorical variable (\texttt{Species}) limits options for
-  analyses
-\end{itemize}
+There are a number of reasons that practitioners and educators may want
+to retire Anderson's \emph{Iris} dataset in their modern data science
+materials. Anderson's \emph{Iris} dataset lacks metadata almost entirely
+\citep{anderson_irises_1935}, limiting meaningful interpretation and
+discussion of research methods, analyses, and outcomes. Of five
+variables in the dataset, two (\texttt{Sepal.Width} and
+\texttt{Sepal.Length}) are unintuitive for most non-botanists, and even
+with explanation the difference between \emph{Iris} \emph{petal} and
+\emph{sepal} dimensions is not obvious. The \emph{Iris} dataset contains
+only complete cases (there are no missing values) and equal sample size
+for all 3 species (\emph{n} = 50 for all), which is cleaner than most
+real-world datasets learners are likely to encounter ``in the wild.''
+The single factor (\texttt{Species}) in the \emph{Iris} data limits
+options for analyses. Finally, due to their publication in (and
+inextricable connection to) eugenicist and statistician R.A. Fisher's
+1936 paper in \emph{Annals of Eugenics} \citep{fisher_use_1936}, the
+\emph{Iris} dataset is burdened by a history in racist research.
 
 Given these motivations to retire \emph{Iris}, we sought to identify,
 then make readily available, a suitable alternative dataset. Considering
-\emph{Iris} usage in data science and statistics materials, we
-established the following criteria for a suitable alternative:
+the positive and negative characteristics of the \emph{Iris} dataset in
+data science and statistics materials, we established the following
+criteria for a suitable alternative:
 
 \begin{itemize}
 \tightlist
@@ -507,11 +499,11 @@ gentoo penguins are assigned to the Adélie-dominated Cluster 1 (Table
 \cline{1-4} \cline{5-8}
 Cluster & Adélie & chinstrap & gentoo & Cluster & setosa & versicolor & virginica\\
 \hline
-1 & 147 & 5 & 1 & 1 & NA & 48 & 4\\
+1 & NA & 9 & 116 & 1 & NA & 48 & 4\\
 \hline
-2 & NA & 9 & 116 & 2 & NA & 2 & 46\\
+2 & 4 & 54 & 6 & 2 & 50 & NA & NA\\
 \hline
-3 & 4 & 54 & 6 & 3 & 50 & NA & NA\\
+3 & 147 & 5 & 1 & 3 & NA & 2 & 46\\
 \hline
 \end{tabular}
 \end{table}
