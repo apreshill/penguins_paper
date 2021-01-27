@@ -22,7 +22,7 @@ author:
     email:  kbgorman@alaska.edu
 abstract: > 
 
- Edgar Anderson's famous 1935 *Iris* dataset, which exists in the base R **datasets** package as **iris**, is ubiquitous in statistics and data science education. Due to a lack of metadata, non-intuitive variables (e.g. Sepal.Width), its publication in (and inextricable connection with) Fisher's 1936 paper in *Annals of Eugenics*, and perfect structure (e.g. no missing values) unrepresentative of most real-world environmental data, a modern alternative to **iris** is needed. Penguin morphological measurements for three species of *Pygoscelis* penguins that breed on islands throughout the Palmer Archipelago, Antarctica, provide an approachable, charismatic and near drop-in replacement for the **iris** data. Here, we introduce the **palmerpenguins** R package and describe the included **penguins** data. We directly compare the two datasets for selected analyses to demonstrate that R users, in particular teachers and learners currently using the **iris** data, can switch to the Palmer Archipelago penguins for many use cases including data wrangling and visualization, correlation, regression, hypothesis testing, multivariate analysis (e.g. PCA), cluster analysis and classification (e.g. by k-means). 
+ Edgar Anderson's famous **iris** dataset, which contains size measurements for three species of *Iris* collected in 1935, exists in the base R **datasets** package as **iris** and is ubiquitous in statistics and data science materials. Due to a lack of metadata, non-intuitive variables (e.g. Sepal.Width), its publication in (and inextricable connection with) Fisher's 1936 paper in *Annals of Eugenics*, and perfect structure (e.g. no missing values) unrepresentative of most real-world environmental data, a modern alternative to **iris** is needed. Penguin morphological measurements for three species of *Pygoscelis* penguins that breed on islands throughout the Palmer Archipelago, Antarctica, provide an approachable, charismatic and near drop-in replacement for the **iris** data. Here, we introduce the **palmerpenguins** R package and describe the included **penguins** data. We directly compare the two datasets for selected analyses to demonstrate that R users, in particular teachers and learners currently using the **iris** data, can switch to the Palmer Archipelago penguins for many use cases including data wrangling and visualization, correlation, regression, hypothesis testing, multivariate analysis (e.g. PCA), cluster analysis and classification (e.g. by k-means). 
 
 preamble: |
   % Any extra LaTeX you need in the preamble
@@ -152,9 +152,26 @@ All analyses were performed in the R language environment using version 3.6.2 (R
 
 The **penguins** data in **palmerpenguins** is generally useful and approachable for data science and statistics education, and is uniquely well-suited to replace the **iris** dataset. Comparisons presented are selected examples for common **iris** uses, and are not exhaustive.
 
+### Overview
+
+```{r, echo = FALSE}
+overview_compare <- tribble(
+  ~Feature, ~iris, ~penguins,
+  "Year(s) collected", "1935", "2007 - 2009",
+  "Dimensions (col x row)", "5 x 150", "8 x 344",
+  "Documentation", "minimal", "complete metadata",
+  "Variable classes", "double (4), factor (1)", "double (2), int (3), factor (3)",
+  "Missing values?", "no (n = 0; 0.0%)", "yes (n = 19; 0.7%)"
+)
+
+overview_compare %>% 
+  kable(caption = "Overview comparison of penguins and iris dataset features and characteristics.")
+```
+
+
 ### Data structure and sample size
 
-Both **iris** and **penguins** are in tidy format [ref] with each column denoting a single variable and each row containing measurements for a single *Iris* flower or penguin. The two datasets are comparable in size: dimensions (columns × rows) are 5 × 150 and 8 × 344 for **iris** and **penguins**, respectively, and sample sizes within species are similar (Table 1). Notably, sample sizes differ for the three penguin species, while sample sizes in **iris** are equal (n = 50 for each Iris species). Multiple factor variables in **penguins** (*species*, *island* and *sex*) along with *year* create additional opportunities for grouping, compared to the single factor (*species*) in **iris**.
+Both **iris** and **penguins** are in tidy format [@wickham_tidy_2014] with each column denoting a single variable and each row containing measurements for a single *Iris* flower or penguin. The two datasets are comparable in size: dimensions (columns × rows) are 5 × 150 and 8 × 344 for **iris** and **penguins**, respectively, and sample sizes within species are similar (Table 1). Notably, sample sizes differ for the three penguin species, while sample sizes in **iris** are equal (n = 50 for each Iris species). Multiple factor variables in **penguins** (*species*, *island* and *sex*) along with *year* create additional opportunities for grouping, compared to the single factor (*species*) in **iris**.
 
 Unlike **iris**, which contains only complete cases, the **penguins** dataset contains a small number of missing values (n~missing~ = 19, out of 2,752 total values). Missing values and unequal sample sizes are common in real-world data, and we believe add learning value to **penguins**. 
 

@@ -1,17 +1,18 @@
 % !TeX root = RJwrapper.tex
-\title{Palmer Archipelago Penguins Data in the palmerpenguins R Package - An
-Alternative to Anderson's \emph{Irises}}
+\title{Palmer Archipelago Penguins Data in the palmerpenguins R Package
+- An Alternative to Anderson's \emph{Irises}}
 \author{by Allison M. Horst, Alison P. Hill, Kristen B. Gorman}
 
 \maketitle
 
 \abstract{%
-Edgar Anderson's famous 1935 \emph{Iris} dataset, which exists in the
-base R \textbf{datasets} package as \textbf{iris}, is ubiquitous in
-statistics and data science education. Due to a lack of metadata,
-non-intuitive variables (e.g.~Sepal.Width), its publication in (and
-inextricable connection with) Fisher's 1936 paper in \emph{Annals of
-Eugenics}, and perfect structure (e.g.~no missing values)
+Edgar Anderson's famous \textbf{iris} dataset, which contains size
+measurements for three species of \emph{Iris} collected in 1935, exists
+in the base R \textbf{datasets} package as \textbf{iris} and is
+ubiquitous in statistics and data science materials. Due to a lack of
+metadata, non-intuitive variables (e.g.~Sepal.Width), its publication in
+(and inextricable connection with) Fisher's 1936 paper in \emph{Annals
+of Eugenics}, and perfect structure (e.g.~no missing values)
 unrepresentative of most real-world environmental data, a modern
 alternative to \textbf{iris} is needed. Penguin morphological
 measurements for three species of \emph{Pygoscelis} penguins that breed
@@ -290,22 +291,49 @@ is uniquely well-suited to replace the \textbf{iris} dataset.
 Comparisons presented are selected examples for common \textbf{iris}
 uses, and are not exhaustive.
 
+\hypertarget{overview}{%
+\subsubsection{Overview}\label{overview}}
+
+\begin{Schunk}
+\begin{table}
+
+\caption{\label{tab:unnamed-chunk-1}Overview comparison of penguins and iris dataset features and characteristics.}
+\centering
+\begin{tabular}[t]{l|l|l}
+\hline
+Feature & iris & penguins\\
+\hline
+Year(s) collected & 1935 & 2007 - 2009\\
+\hline
+Dimensions (col x row) & 5 x 150 & 8 x 344\\
+\hline
+Documentation & minimal & complete metadata\\
+\hline
+Variable classes & double (4), factor (1) & double (2), int (3), factor (3)\\
+\hline
+Missing values? & no (n = 0; 0.0\%) & yes (n = 19; 0.7\%)\\
+\hline
+\end{tabular}
+\end{table}
+
+\end{Schunk}
+
 \hypertarget{data-structure-and-sample-size}{%
 \subsubsection{Data structure and sample
 size}\label{data-structure-and-sample-size}}
 
-Both \textbf{iris} and \textbf{penguins} are in tidy format {[}ref{]}
-with each column denoting a single variable and each row containing
-measurements for a single \emph{Iris} flower or penguin. The two
-datasets are comparable in size: dimensions (columns × rows) are 5 × 150
-and 8 × 344 for \textbf{iris} and \textbf{penguins}, respectively, and
-sample sizes within species are similar (Table 1). Notably, sample sizes
-differ for the three penguin species, while sample sizes in
-\textbf{iris} are equal (n = 50 for each Iris species). Multiple factor
-variables in \textbf{penguins} (\emph{species}, \emph{island} and
-\emph{sex}) along with \emph{year} create additional opportunities for
-grouping, compared to the single factor (\emph{species}) in
-\textbf{iris}.
+Both \textbf{iris} and \textbf{penguins} are in tidy format
+\citep{wickham_tidy_2014} with each column denoting a single variable
+and each row containing measurements for a single \emph{Iris} flower or
+penguin. The two datasets are comparable in size: dimensions (columns ×
+rows) are 5 × 150 and 8 × 344 for \textbf{iris} and \textbf{penguins},
+respectively, and sample sizes within species are similar (Table 1).
+Notably, sample sizes differ for the three penguin species, while sample
+sizes in \textbf{iris} are equal (n = 50 for each Iris species).
+Multiple factor variables in \textbf{penguins} (\emph{species},
+\emph{island} and \emph{sex}) along with \emph{year} create additional
+opportunities for grouping, compared to the single factor
+(\emph{species}) in \textbf{iris}.
 
 Unlike \textbf{iris}, which contains only complete cases, the
 \textbf{penguins} dataset contains a small number of missing values
@@ -316,7 +344,7 @@ believe add learning value to \textbf{penguins}.
 \begin{Schunk}
 \begin{table}
 
-\caption{\label{tab:unnamed-chunk-1}Grouped sample size for iris (by species; n = 150 total) and penguins (by species and sex; n = 344 total). Penguins can be further grouped by variables for island and study year.}
+\caption{\label{tab:unnamed-chunk-2}Grouped sample size for iris (by species; n = 150 total) and penguins (by species and sex; n = 344 total). Penguins can be further grouped by variables for island and study year.}
 \centering
 \begin{tabular}[t]{l|c|l|c|c|c}
 \hline
@@ -491,7 +519,7 @@ gentoo penguins are assigned to the Adélie-dominated Cluster 1 (Table
 \begin{Schunk}
 \begin{table}
 
-\caption{\label{tab:unnamed-chunk-3}K-means cluster assignments by species based on penguin bill length (mm) and depth (mm), and iris petal length (cm) and width (cm).}
+\caption{\label{tab:unnamed-chunk-4}K-means cluster assignments by species based on penguin bill length (mm) and depth (mm), and iris petal length (cm) and width (cm).}
 \centering
 \begin{tabular}[t]{c|c|c|c|c|c|c|c}
 \hline
@@ -499,11 +527,11 @@ gentoo penguins are assigned to the Adélie-dominated Cluster 1 (Table
 \cline{1-4} \cline{5-8}
 Cluster & Adélie & chinstrap & gentoo & Cluster & setosa & versicolor & virginica\\
 \hline
-1 & NA & 9 & 116 & 1 & NA & 48 & 4\\
+1 & 147 & 5 & 1 & 1 & NA & 2 & 46\\
 \hline
-2 & 4 & 54 & 6 & 2 & 50 & NA & NA\\
+2 & NA & 9 & 116 & 2 & NA & 48 & 4\\
 \hline
-3 & 147 & 5 & 1 & 3 & NA & 2 & 46\\
+3 & 4 & 54 & 6 & 3 & 50 & NA & NA\\
 \hline
 \end{tabular}
 \end{table}
@@ -580,4 +608,3 @@ University of Alaska Fairbanks College of Fisheries and Ocean Sciences\\
 2150 Koyukuk Drive\\ 245 O'Neill Building\\ Fairbanks, AK 99775-7220\\
 }
 \href{mailto:kbgorman@alaska.edu}{\nolinkurl{kbgorman@alaska.edu}}
-
