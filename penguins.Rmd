@@ -14,15 +14,16 @@ author:
     - Boston, MA 02210
     email:  alison@rstudio.com
   - name: Kristen B. Gorman
-    affiliation: University of Alaska Fairbanks College of Fisheries and Ocean Sciences
+    affiliation: College of Fisheries and Ocean Sciences
     address:
+    - University of Alaska Fairbanks 
     - 2150 Koyukuk Drive
     - 245 O’Neill Building
     - Fairbanks, AK 99775-7220
     email:  kbgorman@alaska.edu
 abstract: > 
 
- In 1935, Edgar Anderson collected size measurements for 150 flowers from three different species of Iris on the Gaspé Peninsula. Since then, Anderson's *Iris* dataset has become a classic in statistics, machine learning, and data science teaching materials. It is included in the base R **datasets** package as **iris**, making it easy for users to access without knowing much about it. Most notably, Anderson's *Iris* dataset appeared in a 1936 publication by R. A. Fisher in the *Annals of Eugenics*, linking it to a field of research rooted in racism and prejudice. Combined with the lack of dataset documentation, the presence of non-intuitive variables like "sepal width", and the perfectly balanced groups with zero missing values, *Iris* is an unsatisfactory dataset for teaching and illustrating concepts. Users would benefit from working with a more representative, real-world environmental dataset---one with a clean history and a clear link to modern scientific research. A modern alternative to the *Iris* dataset is needed. Here, we introduce the **palmerpenguins** R package, which includes morphological measurements for three species of *Pygoscelis* penguins that breed on islands throughout the Palmer Archipelago, Antarctica. The **penguins** dataset provides an approachable, charismatic, and near drop-in replacement for the **iris** data. We directly compare the two datasets for selected analyses to demonstrate that R users, in particular teachers and learners currently using the **iris** data, can switch to the Palmer Archipelago penguins for many use cases including data wrangling and visualization, correlation, regression, hypothesis testing, multivariate analysis (e.g., PCA), cluster analysis and classification (e.g., by k-means). 
+ In 1935, Edgar Anderson collected size measurements for 150 flowers from three different species of Iris on the Gaspé Peninsula. Since then, Anderson's *Iris* dataset has become a classic in statistics, machine learning, and data science teaching materials. It is included in the base R **datasets** package as **iris**, making it easy for users to access without knowing much about it. Most notably, Anderson's *Iris* dataset appeared in a 1936 publication by R. A. Fisher in the *Annals of Eugenics*, linking the dataset to a field of research rooted in racism and prejudice. Combined with the lack of dataset documentation, the presence of non-intuitive variables like "sepal width", and the perfectly balanced groups with zero missing values, *Iris* is an unsatisfactory dataset for teaching and illustrating concepts. Users would benefit from working with a more representative, real-world environmental dataset---one with a clean history and a clear link to modern scientific research. Thus, a modern alternative to the *Iris* dataset is needed. Here, we introduce the **palmerpenguins** R package, which includes morphological measurements for three species of *Pygoscelis* penguins that breed on islands throughout the Palmer Archipelago, Antarctica. The **penguins** dataset provides an approachable, charismatic, and near drop-in replacement for the **iris** data. We directly compare the two datasets for selected analyses to demonstrate that R users, in particular teachers and learners currently using the **iris** dataset, can switch to the Palmer Archipelago penguins for many use cases including data wrangling and visualization, correlation, regression, hypothesis testing, multivariate analysis (e.g., PCA), cluster analysis and classification (e.g., by k-means). 
 
 preamble: |
   % Any extra LaTeX you need in the preamble
@@ -50,7 +51,7 @@ theme_set(theme_minimal())
 <!---Introductory section which may include references in parentheses
 [@R], or cite a reference such as @R in the text.--->
 
-In 1935, American botanist Edgar Anderson measured petal and sepal structural dimensions (length and width) for 50 flowers from three Iris species: *Iris setosa*, *Iris versicolor*, and *Iris virginica* [@anderson_irises_1935]. The manageable but non-trivial size (`r ncol(iris)` variables and `r nrow(iris)` total observations) and characteristics of the data, including linear relationships and multivariate normality, make it amenable for introducing a wide range of statistical methods including data wrangling, visualization, regression, multivariate exploration, and machine learning. Anderson's *Iris* dataset is built into a number of software packages including the auto-installed datasets package in R [@r_core_team_r_2019], Python's scikit-learn machine learning library [@pedregosa_scikit-learn_2011], and the SAS Sashelp library (SAS Institute, Cary NC), which have facilitated widespread use of the data. As a result, eighty-five years after the data were initially published, Anderson’s *Iris* measurements are ubiquitous in statistics, computational methods, software documentation, and data science courses and materials. 
+In 1935, American botanist Edgar Anderson measured petal and sepal structural dimensions (length and width) for 50 flowers from three Iris species: *Iris setosa*, *Iris versicolor*, and *Iris virginica* [@anderson_irises_1935]. The manageable but non-trivial size (`r ncol(iris)` variables and `r nrow(iris)` total observations) and characteristics of the dataset, including linear relationships and multivariate normality, make it amenable for introducing a wide range of statistical methods including data wrangling, visualization, regression, multivariate exploration, and machine learning. Anderson's *Iris* dataset is built into a number of software packages including the auto-installed datasets package in R [@r_core_team_r_2019], Python's scikit-learn machine learning library [@pedregosa_scikit-learn_2011], and the SAS Sashelp library (SAS Institute, Cary NC), which have facilitated widespread use of the *Iris* data. As a result, eighty-five years after the data were initially published, Anderson’s *Iris* measurements are ubiquitous in statistics, computational methods, software documentation, and data science courses and materials.
 
 There are a number of reasons that modern data science practitioners and educators may want to look beyond Anderson's *Iris* dataset. First, Anderson's *Iris* dataset lacks metadata almost entirely [@anderson_irises_1935], limiting meaningful interpretation and discussion of research methods, analyses, and outcomes. Of five variables in the dataset, two (`Sepal.Width` and `Sepal.Length`) are not intuitive for most non-botanists. Even with explanation, the difference between *Iris* *petal* and *sepal* dimensions is not obvious. Second, the *Iris* dataset contains no missing values and equal sample sizes for each of the three species (*n* = 50), which is cleaner than most real-world datasets learners are likely to encounter "in the wild." Third, the single factor (`Species`) in the *Iris* data limits options for analyses. Finally, due to its direct link to a publication in the *Annals of Eugenics* by eugenicist and statistician R.A. Fisher's [@fisher_use_1936], the *Iris* dataset is burdened by a history in racist research. 
 
@@ -60,22 +61,22 @@ In 1936, one year after being described in the Bulletin of the American Iris Soc
 
 There is recent momentum to address Fisher’s racist legacy in statistics. In June 2020, the Committee of Presidents of Statistical Societies’ R.A. Fisher Award and Lectureship was replaced by the Distinguished Achievement Award and Lectureship, to “advance a more just, equitable, diverse, and inclusive statistical community” [@noauthor_institute_2020]. Cambridge University’s Gonville and Caius College recently announced plans to remove a stained-glass window celebrating Fisher from a campus dining hall [@noauthor_sir_2020]. In the R community, there are calls to (1) address the *Iris* dataset's use in Fisher’s eugenics work, and/or (2) consider using a different dataset [@poisot_timothee_its_2020, @garrick_aden-buie_lets_2020]. --->
 
-Given the need for fresh data science-ready datasets, we wanted to find a suitable alternative dataset that we could make easy to access for everyone. After evaluating the positive and negative features of the *Iris* dataset in data science and statistics materials, we established the following criteria for a suitable alternative:
+Given the need for fresh data science-ready datasets, we sought to identify a suitable alternative dataset that could be made easily accessible for a broad audience. After evaluating the positive and negative features of the *Iris* dataset in data science and statistics materials, we established the following criteria for a suitable alternative:
 
 - Available by appropriate license (ideally, CC0 "no rights reserved")
-- Features intuitive subjects and variables that are interesting and understandable to learners across fields
+- Features intuitive subjects and variables that are interesting and understandable to learners across disciplines
 - Complete metadata and documentation
 - Manageable (but not trivial) in size
 - Minimal data cleaning and pre-processing required for most analyses
 - Real-world (not manufactured), modern data
-- Similar opportunities for teaching and learning R, data science, and statistical skills
+- Provides similar opportunities for teaching and learning R, data science, and statistical skills
 - Can easily replace *Iris* for most use cases
 
-Here, we describe an alternative to Anderson's *Iris* data that largely satisfies these criteria: a refreshing, approachable, and charismatic dataset containing real-world morphological data for three *Pygoscelis* penguin species that breed throughout the Western Antarctic Peninsula region, made available through the Long-Term Ecological Research Network (US LTER). By comparing data structure, size, and a range of analyses side-by-side for the two datasets, we demonstrate that the Palmer Archipelago penguin measurements are an ideal substitute for Anderson's *Iris* data for many use cases in statistics and data science education.
+Here, we describe an alternative to Anderson's *Iris* data that largely satisfies these criteria: a refreshing, approachable, and charismatic dataset containing real-world morphological data for three *Pygoscelis* penguin species that breed throughout the Western Antarctic Peninsula region, made available through the United States Long-Term Ecological Research (US LTER) Network. By comparing data structure, size, and a range of analyses side-by-side for the two datasets, we demonstrate that the Palmer Archipelago penguin data are an ideal substitute for Anderson's *Iris* dataset for many use cases in statistics and data science education.
 
 ## Data source
 
-Body size measurements, clutch (i.e., egg laying) observations (e.g., date of first egg laid, and clutch completion), and carbon (^13^C/^12^C, $\delta$^13^C) and nitrogen (^15^N/^14^N, $\delta$^15^N) stable isotope values of red blood cells for male and female adult Adélie (*P. adeliae*), chinstrap (*P. antarcticus*), and gentoo (*P. papua*) penguins on three islands (Biscoe, Dream and Torgersen) in the Palmer Archipelago were collected from 2007 - 2009 by Dr. Kristen Gorman in collaboration with the [Palmer Station LTER](https://pal.lternet.edu/), part of the [US LTER Network](https://lternet.edu/). For complete data collection methods and published analyses, see Gorman et al. (2014).
+Body size measurements, clutch (i.e., egg laying) observations (e.g., date of first egg laid, and clutch completion), and carbon (^13^C/^12^C, $\delta$^13^C) and nitrogen (^15^N/^14^N, $\delta$^15^N) stable isotope values of red blood cells for adult male and female Adélie (*P. adeliae*), chinstrap (*P. antarcticus*), and gentoo (*P. papua*) penguins on three islands (Biscoe, Dream and Torgersen) within the Palmer Archipelago were collected from 2007 - 2009 by Dr. Kristen Gorman in collaboration with the [Palmer Station LTER](https://pal.lternet.edu/), part of the [US LTER Network](https://lternet.edu/). For complete data collection methods and published analyses, see Gorman et al. (2014).
 
 The data in the **palmerpenguins** R package are available for use by CC0 license ("No Rights Reserved") in accordance with the [Palmer Station LTER Data Policy](https://pal.lternet.edu/data/policies) and the [LTER Data Access Policy](https://lternet.edu/data-access-policy/), and were imported from the [Environmental Data Initiative (EDI) Data Portal](https://environmentaldatainitiative.org/) at the links below: 
 
@@ -94,7 +95,7 @@ Information, examples, and links to community-contributed materials are availabl
 The **palmerpenguins** R package contains two data objects: **penguins_raw** and **penguins**. The **penguins_raw** data consists of all raw data for `r ncol(palmerpenguins::penguins_raw)` variables (Appendix Table 1), recorded completely or in part for `r nrow(palmerpenguins::penguins_raw)` individual penguins, accessed directly from EDI. We generally recommend using the curated data in **penguins**, which is a subset of **penguins_raw** retaining all `r nrow(palmerpenguins::penguins)` observations, minimally updated (Appendix B) and reduced to the following eight variables:
 
 - *species:* a factor denoting the penguin species (Adélie, chinstrap, or gentoo)
-- *island:* a factor denoting the island (in Palmer Archipelago, Antarctica) where observed (Biscoe, Dream or Torgersen)
+- *island:* a factor denoting the island (Palmer Archipelago, Antarctica) where penguins were observed (Biscoe Point, Dream Island or Torgersen Island)
 - *bill_length_mm:* a number denoting length of the dorsal ridge of a penguin bill (millimeters)
 - *bill_depth_mm:* a number denoting the depth of a penguin bill (millimeters)
 - *flipper_length_mm:* an integer denoting the length of a penguin flipper (millimeters)
@@ -146,7 +147,7 @@ All analyses were performed in the R language environment using version 3.6.2 (R
 
 ## Selected comparisons between **iris** and **penguins**
 
-The **penguins** data in **palmerpenguins** is generally useful and approachable for data science and statistics education, and is uniquely well-suited to replace the **iris** dataset. Comparisons presented are selected examples for common **iris** uses, and are not exhaustive.
+The **penguins** data in **palmerpenguins** is useful and approachable for data science and statistics education, and is uniquely well-suited to replace the **iris** dataset. Comparisons presented are selected examples for common **iris** uses, and are not exhaustive.
 
 ### Overview
 
@@ -399,7 +400,15 @@ kmeans_2var_table
 
 ## Conclusion
 
-Here, we have shown that structural size measurements for Palmer Archipelago *Pygoscelis* penguins, available as **penguins** in the **palmerpenguins** R package, offer a near drop-in replacement for **iris** in a number of common use cases for data science and statistics education including exploratory data visualization, linear correlation and regression, PCA, and clustering by k-means. In addition, teaching and learning opportunities in **penguins** are increased due to a greater number of variables, missing values, unequal sample sizes, and Simpson's paradox examples. 
+Here, we have shown that structural size measurements for Palmer Archipelago *Pygoscelis* penguins, available as **penguins** in the **palmerpenguins** R package, offer a near drop-in replacement for **iris** in a number of common use cases for data science and statistics education including exploratory data visualization, linear correlation and regression, PCA, and clustering by k-means. In addition, teaching and learning opportunities in **penguins** are increased due to a greater number of variables, missing values, unequal sample sizes, and Simpson's paradox examples. Importantly, the **penguins** dataset encompasses real-world information derived from several charasmatic marine predator species with regional breeding populations notably responding to environmental change occuring throughout the Western Antarctic Peninsula region of the Southern Ocean (see Bestelmeyer et al. 2011, Gorman et al. 2014, 2015, 2017). Thus, the **penguins** dataset can facilitate discussions more broadly on biodiversity responses to global change - a contemporary and critical topic in ecology, evolution, and the environmental sciences.
+
+Bestelmeyer, B.T., A.M. Ellison, W.R. Fraser, K.B. Gorman, S.J. Holbrook, C.M. Laney, M.D. Ohman, D.P.C. Peters, F.C. Pillsbury, A. Rassweiler, R. Schmitt, and S. Sharma. 2011. Analysis of abrupt transitions in ecological systems. Ecosphere 2(12):art129.
+
+Gorman, K.B. 2015. Integrative studies of Southern Ocean food webs and Pygoscelis penguin demography: mechanisms of population response to environmental change. Ph.D. Thesis. Simon Fraser University, Burnaby, British Columbia, Canada. 337 pp.
+
+Gorman, K.B., S.L. Talbot, S.A. Sonsthagen, G.K. Sage, M.C. Gravely, W.R. Fraser and T.D. Williams. 2017. Population genetic structure and gene flow of Adélie penguins (Pygoscelis adeliae) breeding throughout the western Antarctic Peninsula. Antarctic Science 29(6):499-510.
+
+Gorman, K.B., T.D. Williams, and W.R. Fraser. 2014. Ecological sexual dimorphism and environmental variability within a community of Antarctic penguins (genus Pygoscelis). PLoS ONE 9(3): e90081. ***ALREADY REFERENCED
 
 ## Appendix 
 
