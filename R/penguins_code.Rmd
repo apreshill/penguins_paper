@@ -4,7 +4,6 @@ output:
   html_document:
     number_sections: yes
   pdf_document: default
-bibliography: ../bibliography/references.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -18,33 +17,40 @@ library(GGally)
 library(recipes)
 library(shadowtext)
 library(broom)
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 theme_set(theme_minimal())
 ```
 
 # MANUSCRIPT CODE
 
-## Structure and sample size 
+## Table 1: Overview summary of penguins and iris datasets
 
-```{r, iris-table, echo = FALSE}
-set.seed(1900)
-sample_n(iris, 6) %>% 
-  kable(caption = "Six randomly selected rows from the iris dataset (of 150 total rows). Values for petal and sepal dimensions are in centimeters.")
+```{r, echo = TRUE}
+# Features overview for penguins and iris: 
+overview_compare <- tribble(
+  ~Feature, ~iris, ~penguins,
+  "Year(s) collected", "1935", "2007 - 2009",
+  "Dimensions (col x row)", "5 x 150", "8 x 344",
+  "Documentation", "minimal", "complete metadata",
+  "Variable classes", "double (4), factor (1)", "double (2), int (3), factor (3)",
+  "Missing values?", "no (n = 0; 0.0%)", "yes (n = 19; 0.7%)"
+)
+
+overview_compare %>% 
+  kable(caption = "Overview comparison of penguins and iris dataset features and characteristics.")
 ```
 
-```{r, penguins-table}
-set.seed(1900)
-sample_n(penguins, 6) %>% 
-  kable(caption = "Six randomly selected rows from the penguins dataset (of 344 total rows). Units of the four numeric penguin measurements are included as suffixes in variable names, with \"_mm\" indicating millimeters, and \"_g\" indicating grams.")
-```
+## Table 2: Counts comparison between iris and penguins
 
-```{r compare_counts, echo = FALSE}
+```{r compare_counts, echo = TRUE}
 
+# Count iris observations by species:
 iris_counts <- iris %>% 
   count(Species) %>% 
   rename(`Iris species` = Species)
 
+# Count penguins observations by species and sex:
 penguin_counts <- penguins %>% 
   mutate(species = as.character(species)) %>% 
   mutate(species = case_when(
@@ -59,40 +65,24 @@ penguin_counts <- penguins %>%
   as.data.frame() %>% 
   rename(`Penguin species` = species)
 
-
+# Combine into a single table
 iris_penguin_n <- cbind(iris_counts, penguin_counts) %>%
    rename(`Sample size` = n)
 
- iris_penguin_n %>%
-   gt() %>%
-   tab_spanner(
-     label = "Iris sample size (by species)",
-     columns = vars(`Iris species`, `Sample size`)
-   ) %>%
-   tab_spanner(
-     label = "Penguin sample size (by species and sex)",
-     columns = vars(`Penguin species`, `Female`, `Male`, `NA`)
-   ) %>%
-   tab_footnote(
-     footnote = "Note: Here, penguin sample sizes are split by species and sex, and could be further divided by island and year. NA column for penguins indicate observations where sex was not recorded.",
-     location = cells_column_labels(
-       columns = vars(`Penguin species`)
-     )
-   )
- 
- iris_penguin_n <- cbind(iris_counts, penguin_counts) %>%
-   rename(`Sample size` = n)
- 
- iris_penguin_n %>% 
-   kable() %>% 
-   add_header_above(c("Iris sample size (by species)" = 2, "Penguin sample size (by species and sex)" = 4 )) %>% 
-   kable_styling()
-
+# Finalize combined counts table:
+iris_penguin_n %>% 
+   kable(caption = "Grouped sample size for iris (by species; n = 150 total) and penguins (by species and sex; n = 344 total). Penguins can be further grouped by variables for island and study year.", align = "lclccc") %>% 
+  add_header_above(c("Iris sample size (by species)" = 2, "Penguin sample size (by species and sex)" = 4 ))
 ```
 
-## Overview comparison: numeric variables
+## Figures 1 & 2: Overview comparison: numeric variables (pairs plots with ggpairs)
 
-```{r, warning = FALSE, message = FALSE, echo = FALSE, fig.align = "center"}
+```{r, echo = TRUE, fig.align = "center"}
+### Pairs plots for penguins and iris (with ggpairs)
+
+# Penguin pairs plot: 
+
+png(here("fig", "penguin_pairs.png"), units="in", width = 6, height = 4.5, res = 500)
 penguin_pairs <- penguins %>%
   mutate(species = as.character(species)) %>% 
   mutate(species = case_when(
@@ -116,9 +106,12 @@ penguin_pairs <- penguins %>%
         panel.grid.minor = element_blank(),
         panel.border = element_rect(color = "gray80", fill = NA)
         )
+  print(penguin_pairs)
+dev.off()
 
-penguin_pairs
+# Iris pairs plot: 
 
+png(here("fig", "iris_pairs.png"), units="in", width = 6, height = 4.5, res = 500)
 iris_pairs <- iris %>%
   ggpairs(aes(color = Species, shape = Species),
           columns = c("Petal.Length", "Petal.Width", 
@@ -134,22 +127,22 @@ iris_pairs <- iris %>%
         panel.grid.minor = element_blank(),
         panel.background = element_rect(fill = "white", color = "gray80")
         )
-
-iris_pairs
+  print(iris_pairs)
+dev.off()
 
 ```
 
-## Linear correlation & regression
+## Figure 3: Example linear relationships
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.align = "center"}
+```{r, echo = TRUE, fig.align = "center"}
+
+# Penguin linear relationships (flipper length versus body mass):
 
 penguin_flip_mass_scatter <- 
   penguins %>% 
   mutate(species = as.character(species)) %>% 
   mutate(species = case_when(
     species == "Adelie" ~ "Adélie", 
-    species == "Chinstrap" ~ "chinstrap",
-    species == "Gentoo" ~ "gentoo",
     TRUE ~ species
   )) %>%
   ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
@@ -165,6 +158,7 @@ penguin_flip_mass_scatter <-
         panel.border = element_rect(fill = NA, color = "gray70"),
         legend.title = element_blank())
 
+# To compare without penguin species as a variable (not in manuscript):
 penguin_flip_mass_scatter_all <- ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_point(color = "gray50", size = 1.5) +
   geom_smooth(method = "lm", se = FALSE, color = "black") +
@@ -175,6 +169,7 @@ penguin_flip_mass_scatter_all <- ggplot(penguins, aes(x = flipper_length_mm, y =
         panel.grid = element_blank(),
         panel.border = element_rect(fill = NA, color = "gray70"))
 
+# Iris linear relationships (petal dimensions):
 iris_petal_scatter <- ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) +
   geom_point(aes(color = Species, size = Species, shape = Species), size = 1.5) +
   geom_smooth(aes(group = Species, color = Species), method = "lm", se = FALSE, show.legend = FALSE) +
@@ -188,6 +183,7 @@ iris_petal_scatter <- ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) +
         panel.background = element_rect(fill = NA, color = "gray70"),
         legend.title = element_blank())
 
+# To compare without iris species as a variable (not in manuscript):
 iris_petal_scatter_all <- ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) +
   geom_point(color = "gray50", size = 1.5) +
   geom_smooth(method = "lm", se = FALSE, color = "black") +
@@ -198,15 +194,19 @@ iris_petal_scatter_all <- ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) +
         panel.grid = element_blank(),
         panel.background = element_rect(fill = NA, color = "gray70")) 
 
+# Combine and save image: 
+png(here("fig", "linear_example.png"), units="in", width = 6, height = 3, res = 500)
 linear_example <- (penguin_flip_mass_scatter + iris_petal_scatter) + plot_annotation(tag_levels = 'A')
+print(linear_example)
+dev.off()
 
-ggsave(here("fig","linear_example.png"), width = 6, height = 3)
+# ggsave(here("fig","linear_example.png"), width = 6, height = 3)
 ```
 
-## Simpson's Paradox
+## Figure 4: Simpson's Paradox
 
-```{r}
-# Simpson's Paradox example (bill dimensions)
+```{r, echo = TRUE}
+# Simpson's Paradox example (bill dimensions, omitting species):
 simpson_nospecies <- ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
   geom_point(color = "gray40", alpha = 0.6, size = 2) +
   geom_smooth(method = "lm", se = FALSE, color = "black") +
@@ -214,6 +214,7 @@ simpson_nospecies <- ggplot(data = penguins, aes(x = bill_length_mm, y = bill_de
   theme(panel.border = element_rect(fill = NA, color = "gray70")) +
   labs(x = "Bill length (mm)", y = "Bill depth (mm)")
 
+# Bill dimensions, including species:
 simpson_wspecies <- 
   penguins %>% 
   mutate(species = as.character(species)) %>% 
@@ -227,22 +228,32 @@ simpson_wspecies <-
   scale_color_manual(values = c("darkorange","#0072b2","#009e73")) +
   theme_minimal() +
   theme(panel.border = element_rect(fill = NA, color = "gray70")) +
-  labs(x = "Bill length (mm)", y = "Bill depth (mm)")
+  labs(x = "Bill length (mm)", y = "Bill depth (mm)") +
+  guides(color = guide_legend("Species"), 
+           shape = guide_legend("Species"))
 
+# Combining into a compound figure:
 simpson_gg <- (simpson_nospecies | simpson_wspecies) + plot_annotation(tag_levels = 'A')
 
-ggsave(here("fig","simpson_gg.png"), width = 8, height = 3.5)
+ggsave(here("fig","simpson_gg.png"), width = 6, height = 2.5, dpi = 500)
 ```
 
-## PCA
+## Figure 5: PCA
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align = "center"}
-# Copied from Alison Hill's post! 
+```{r, echo = TRUE, fig.align = "center"}
+# From Alison Hill's post for palmerpenguins pkgdown site
+
 ### PENGUINS PCA: 
 
 # Omit year
 penguins_noyr <- penguins %>% 
-  select(-year)
+  select(-year) %>% 
+  mutate(species = as.character(species)) %>% 
+  mutate(species = case_when(
+    species == "Adelie" ~ "Adélie",
+    TRUE ~ species
+  )) %>% 
+  mutate(species = as.factor(species))
 
 penguin_recipe <-
   recipe(~., data = penguins_noyr) %>% 
@@ -260,22 +271,26 @@ penguin_percvar <- penguin_recipe %>%
   tidy(id = "pca", type = "variance") %>% 
   dplyr::filter(terms == "percent variance") 
 
-# penguin_pca
-# Biplot: 
-# get pca loadings into wider format
+# Make the penguins PCA biplot: 
+
+# Get pca loadings into wider format
 pca_wider <- penguin_pca %>% 
   tidyr::pivot_wider(names_from = component, id_cols = terms)
+
 # define arrow style:
 arrow_style <- arrow(length = unit(.05, "inches"),
                      type = "closed")
-# Make the biplot:
+
+# Make the penguins PCA biplot:
 pca_plot <-
   juice(penguin_recipe) %>%
   ggplot(aes(PC1, PC2)) +
   geom_point(aes(color = species, shape = species), 
              alpha = 0.7, 
              size = 2) +
-  scale_colour_manual(values = c("darkorange","#0072b2","#009e73")) 
+  scale_color_manual(values = c("darkorange","#0072b2","#009e73")) +
+  guides(color = guide_legend("Species"), 
+           shape = guide_legend("Species"))
 
 penguins_biplot <- pca_plot +
   geom_segment(data = pca_wider,
@@ -309,6 +324,7 @@ penguin_screeplot <- penguin_percvar %>%
   theme(panel.border = element_rect(color = "gray70", fill = NA))
 
 ### IRIS PCA: 
+
 iris_recipe <-
   recipe(~., data = iris) %>% 
   update_role(Species, new_role = "id") %>% 
@@ -318,14 +334,18 @@ iris_recipe <-
 iris_pca <- 
   iris_recipe %>% 
   tidy(id = "pca") 
-# Biplot: 
-# get pca loadings into wider format
+
+### Iris PCA biplot: 
+
+# Get pca loadings into wider format
 iris_wider <- iris_pca %>% 
   tidyr::pivot_wider(names_from = component, id_cols = terms)
+
 # define arrow style:
 arrow_style <- arrow(length = unit(.05, "inches"),
                      type = "closed")
-# Make the biplot:
+
+# Make the iris PCA biplot:
 iris_pca_plot <-
   juice(iris_recipe) %>%
   ggplot(aes(PC1, PC2)) +
@@ -353,6 +373,8 @@ iris_percvar <- iris_recipe %>%
   tidy(id = "pca", type = "variance") %>% 
   dplyr::filter(terms == "percent variance")
 
+# Iris screeplot: 
+
 iris_screeplot <- iris_percvar %>% 
   ggplot(aes(x = component, y = value)) + 
   geom_col(fill = "gray50") + 
@@ -362,23 +384,30 @@ iris_screeplot <- iris_percvar %>%
   geom_text(aes(label = round(value,2)), vjust=-0.25) +
   theme(panel.border = element_rect(color = "gray70", fill = NA))
 
+# Combine biplots and screeplots for both iris & penguins:
+
 (penguins_biplot | iris_biplot) / (penguin_screeplot | iris_screeplot) + plot_annotation(tag_levels = 'A')
 
-ggsave(here("fig","pca_plots.png"), width = 8, height = 8)
+ggsave(here("fig","pca_plots.png"), width = 8, height = 8, dpi = 500)
 ```
 
-## K-means clustering
+## Figure 6 and Table 3: K-means clustering
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align = "center"}
+```{r, echo = TRUE, fig.align = "center"}
 
 # TWO VARIABLE k-means comparison
 # Penguins: Bill length vs. bill depth
-# Iris: petal length vs. petal width
-
 pb_species <- penguins %>% 
   select(species, starts_with("bill")) %>% 
-  drop_na()
+  drop_na() %>% 
+  mutate(species = as.character(species)) %>% 
+  mutate(species = case_when(
+    species == "Adelie" ~ "Adélie",
+    TRUE ~ species
+  )) %>% 
+  mutate(species = as.factor(species))
 
+# Prep penguins for k-means:
 pb_nospecies <- pb_species %>% 
   select(-species) %>% 
   recipe() %>% 
@@ -387,13 +416,15 @@ pb_nospecies <- pb_species %>%
   juice()
   
 # Perform k-means on penguin bill dimensions (k = 3, w/20 centroid starts)
-# save augmented data
+
+# Save augmented data
+set.seed(100)
 pb_clust <- 
   pb_nospecies %>% 
   kmeans(centers = 3, nstart = 20) %>% 
   broom::augment(pb_species)
 
-# Plot clusters
+# Plot penguin k-means clusters:
 pb_kmeans_gg <- 
   pb_clust %>% 
   ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
@@ -401,20 +432,26 @@ pb_kmeans_gg <-
             key_glyph = draw_key_rect) +
   scale_color_manual(values = c("darkorange","#0072b2","#009e73"))+
   theme(legend.position = "bottom",
-         panel.border = element_rect(fill = NA, color = "gray70"))
+         panel.border = element_rect(fill = NA, color = "gray70")) +
+  labs(x = "Bill length (mm)",
+       y = "Bill depth (mm)",
+       color = "Species")
 
 # Get counts in each cluster by species
 pb_clust_n <- pb_clust %>% 
   count(species, .cluster) %>% 
   pivot_wider(names_from = species, values_from = n, names_sort = TRUE) %>% 
-  arrange(.cluster)
+  arrange(.cluster) %>% 
+  replace_na(list(`Adelie` = 0)) 
 
 ### Iris k-means
+# Iris: petal length vs. petal width
 
+# Select only petal dimensions:
 ip_species <- iris %>% 
   select(Species, starts_with("Petal"))
 
-# remove species factor & scale petal dimensions: 
+# Remove species factor & scale petal dimensions: 
 ip_nospecies <- ip_species %>% 
   select(-Species) %>% 
   recipe() %>% 
@@ -422,13 +459,14 @@ ip_nospecies <- ip_species %>%
   prep() %>% 
   juice()
 
-# Perform k-means on iris petal dimensions (k = 3, w/20 centroid starts)
+# Perform k-means on iris petal dimensions (k = 3, w/20 centroid starts):
+set.seed(100)
 ip_clust <- 
   ip_nospecies %>% 
   kmeans(centers = 3, nstart = 20) %>% 
   broom::augment(ip_species)
 
-# Plot clusters
+# Plot iris k-means clusters:
 ip_kmeans_gg <- 
   ip_clust %>% 
   ggplot(aes(x = Petal.Length, y = Petal.Width)) +
@@ -436,27 +474,28 @@ ip_kmeans_gg <-
             key_glyph = draw_key_rect) +
   theme(legend.position = "bottom",
          panel.border = element_rect(fill = NA, color = "gray70")) +
-  scale_color_manual(values = c("gray70","gray50","black")) 
+  scale_color_manual(values = c("gray70","gray50","black"))  +
+  labs(x = "Petal length (cm)",
+       y = "Petal width (cm)")
 
-# Get counts in each cluster by species
+# Get iris counts in each cluster by species:
 ip_clust_n <- ip_clust %>% 
   count(Species, .cluster) %>% 
   pivot_wider(names_from = Species, values_from = n, names_sort = TRUE) %>% 
-  arrange(.cluster)
+  arrange(.cluster) %>% 
+  replace_na(list(`setosa` = 0, `versicolor` = 0, `virginica` = 0)) 
 
-# Combine kmeans plots for penguins & iris
+# Combine k-means plots for penguins & iris:
 (pb_kmeans_gg | ip_kmeans_gg) + plot_annotation(tag_levels = "A")
 
-ggsave(here("fig","kmeans.png"), width = 8, height = 4.5)
+# Save image:
+ggsave(here("fig","kmeans.png"), width = 8, height = 4.5, dpi = 500)
 
-
-
+# Make cluster assignments table:
 kmeans_2var_table <- cbind(pb_clust_n, ip_clust_n) %>% 
-  kable() %>% 
+  kable(col.names = c("Cluster", "Adélie", "Chinstrap", "Gentoo", "Cluster", "setosa", "versicolor", "virginica"),
+        caption = "K-means cluster assignments by species based on penguin bill length (mm) and depth (mm), and iris petal length (cm) and width (cm).", align = "cccccc") %>% 
   kable_styling(full_width = FALSE) %>% 
-  column_spec(c(5:8), background = "gainsboro") %>% 
   add_header_above(c("Penguins cluster assignments" = 4, "Iris cluster assignments" = 4))
-
-kmeans_2var_table
 ```
 
