@@ -100,7 +100,7 @@ The data in the \CRANpkg{palmerpenguins} R package are available for use by CC0 
 
 - Adélie penguin data [@lter_structural_2020]: [KNB-LTER Data Package 219.5](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.219.5)
 - Gentoo penguin data [@lter_structural_2020-1]: [KNB-LTER Data Package 220.5](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.220.5)
-- Chinstrap penguin data [@lter_structural_2020-2]: [KNB-LTER Data Package 221.5](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.221.6)
+- Chinstrap penguin data [@lter_structural_2020-2]: [KNB-LTER Data Package 221.6](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.221.6)
 
 
 ## R package: palmerpenguins
