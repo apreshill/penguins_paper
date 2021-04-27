@@ -153,17 +153,17 @@ Initiative (EDI) Data Portal} at the links below:
 \begin{itemize}
 \tightlist
 \item
-  Adélie penguin data (LTER and Gorman 2020a):
+  Adélie penguin data \citep{lter_structural_2020}:
   \href{https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.219.5}{KNB-LTER
   Data Package 219.5}
 \item
-  Chinstrap penguin data (LTER and Gorman 2020b):
-  \href{https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.221.6}{KNB-LTER
-  Data Package 221.5}
-\item
-  Gentoo penguin data (LTER and Gorman 2020c):
+  Gentoo penguin data \citep{lter_structural_2020-1}:
   \href{https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.220.5}{KNB-LTER
   Data Package 220.5}
+\item
+  Chinstrap penguin data \citep{lter_structural_2020-2}:
+  \href{https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.221.6}{KNB-LTER
+  Data Package 221.5}
 \end{itemize}
 
 \hypertarget{r-package-palmerpenguins}{%
@@ -571,17 +571,19 @@ Missing values? & yes (n = 336; 5.7\%)\\
 
 \end{Schunk}
 
-\hypertarget{other-data-sources}{%
-\subsection{Other data sources}\label{other-data-sources}}
+\hypertarget{palmerpenguins-for-other-programming-languages}{%
+\subsection{palmerpenguins for other programming
+languages}\label{palmerpenguins-for-other-programming-languages}}
 
-Python: Python users can access the penguins data in the
-\textbf{seaborn} data visualization library
-\citep{michael_waskom_2017_883859}. Example code to load the data in
-Python:
+Python: Python users can load the palmerpenguins datasets into their
+Python environment using the following code to install and access data
+in the \href{https://pypi.org/project/palmerpenguins/}{palmerpenguins
+Python package}:
 
 \begin{verbatim}
-    import seaborn as sns
-    df = sns.load_dataset('penguins') 
+    pip install palmerpenguins
+    from palmerpenguins import load_penguins
+    penguins = load_penguins()
 \end{verbatim}
 
 Julia: Julia users can access the penguins data in the

@@ -98,9 +98,10 @@ Body size measurements, clutch (i.e., egg laying) observations (e.g., date of fi
 
 The data in the \CRANpkg{palmerpenguins} R package are available for use by CC0 license ("No Rights Reserved") in accordance with the [Palmer Station LTER Data Policy](https://pal.lternet.edu/data/policies) and the [LTER Data Access Policy](https://lternet.edu/data-access-policy/), and were imported from the [Environmental Data Initiative (EDI) Data Portal](https://environmentaldatainitiative.org/) at the links below: 
 
-- Adélie penguin data (LTER and Gorman 2020a): [KNB-LTER Data Package 219.5](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.219.5)
-- Chinstrap penguin data (LTER and Gorman 2020b): [KNB-LTER Data Package 221.5](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.221.6)
-- Gentoo penguin data (LTER and Gorman 2020c): [KNB-LTER Data Package 220.5](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.220.5)
+- Adélie penguin data [@lter_structural_2020]: [KNB-LTER Data Package 219.5](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.219.5)
+- Gentoo penguin data [@lter_structural_2020-1]: [KNB-LTER Data Package 220.5](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.220.5)
+- Chinstrap penguin data [@lter_structural_2020-2]: [KNB-LTER Data Package 221.5](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-pal.221.6)
+
 
 ## R package: palmerpenguins
 
@@ -224,7 +225,7 @@ Principal component analysis (PCA) is a dimensional reduction method commonly us
 
 A comparison of PCA with the four variables of structural size measurements in **penguins** and **iris** (both normalized prior to PCA) reveals highly similar results (Figure \ref{fig:pca}). For both datasets, one species is distinct (Gentoo penguins, and setosa irises) while the other two species (Chinstrap/Adélie and versicolor/virginica) appear somewhat overlapping in the first two principal components (Figure \ref{fig:pca} A,B). Screeplots reveal that the variance explained by each principal component (PC) is very similar across the two datasets, particularly for PC1 and PC2: for **penguins**, 88.15% of total variance is captured by the first two PCs, compared to 95.81% for **iris**, with a similarly large percentage of variance captured by PC1 and PC2 in each (Figure \ref{fig:pca} C,D).
 
-```{r, pca, width = 8, height = 8, fig.cap = "Principal component analysis biplots and screeplots for structural size measurements in penguins (A,C) and iris (B,D), revealing similarities in multivariate patterns, variable loadings, and variance explained by each component. For penguins, variables are flipper length (mm), body mass (g), bill length (mm) and bill depth (mm); groups are visualized by species (Adélie = orange circles, Chinstrap = blue triangles, Gentoo = green squares). For iris, variables are petal length (cm), petal width (cm), sepal length (cm) and sepal width (cm); groups are visualized by species (setosa = light gray circles, versicolor = dark gray triangles, virginica = black squares). Values above screeplot columns (C,D) indicate percent of total variance explained by each of the four principal components.", fig.pos='htbp'}
+```{r, pca, fig.width = 8, fig.height = 8, fig.cap = "Principal component analysis biplots and screeplots for structural size measurements in penguins (A,C) and iris (B,D), revealing similarities in multivariate patterns, variable loadings, and variance explained by each component. For penguins, variables are flipper length (mm), body mass (g), bill length (mm) and bill depth (mm); groups are visualized by species (Adélie = orange circles, Chinstrap = blue triangles, Gentoo = green squares). For iris, variables are petal length (cm), petal width (cm), sepal length (cm) and sepal width (cm); groups are visualized by species (setosa = light gray circles, versicolor = dark gray triangles, virginica = black squares). Values above screeplot columns (C,D) indicate percent of total variance explained by each of the four principal components.", fig.pos='htbp'}
 ```
 
 ### K-means clustering
@@ -350,13 +351,14 @@ overview_penguins_raw %>%
 ```
 
 
-## Other data sources
+## palmerpenguins for other programming languages
 
-Python: Python users can access the penguins data in the **seaborn** data visualization library [@michael_waskom_2017_883859]. Example code to load the data in Python:    
+Python: Python users can load the palmerpenguins datasets into their Python environment using the following code to install and access data in the [palmerpenguins Python package](https://pypi.org/project/palmerpenguins/):
 
 ```
-    import seaborn as sns
-    df = sns.load_dataset('penguins') 
+    pip install palmerpenguins
+    from palmerpenguins import load_penguins
+    penguins = load_penguins()
 ```
 
 Julia: Julia users can access the penguins data in the **PalmerPenguins.jl** package. Example code to import the penguins data through **PalmerPenguins.jl** (more information on **PalmerPenguins.jl** from David Widmann can be found [here](https://github.com/devmotion/PalmerPenguins.jl)): 
