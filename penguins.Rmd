@@ -29,7 +29,7 @@ abstract: >
 preamble: |
   % Any extra LaTeX you need in the preamble
 output: rticles::rjournal_article
-bibiography: packages.bib
+bibiography: penguins.bib
 ---
 
 ```{r setup, include=FALSE, purl=FALSE}
@@ -383,4 +383,4 @@ All analyses were performed in the R language environment using version 3.6.2 [@
 - \pkg{base} and \pkg{stats} [@r_core_team_r_2019]: for various analyses throughout
 
 
-\bibliography{RJreferences}
+\bibliography{penguins}
