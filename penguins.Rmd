@@ -26,7 +26,9 @@ abstract: >
  We directly compare the **iris** and **penguins** datasets for selected analyses to demonstrate that R users, in particular teachers and learners currently using **iris**, can switch to the Palmer Archipelago penguins for many use cases including data wrangling, visualization, linear modeling, multivariate analysis (e.g., PCA), cluster analysis and classification (e.g., by k-means). 
 preamble: |
   % Any extra LaTeX you need in the preamble
-output: rticles::rjournal_article
+output: 
+  rjdistill::rjournal_web_article: default
+  rticles::rjournal_article: default
 bibiography: penguins.bib
 ---
 
@@ -216,6 +218,38 @@ Simpson’s Paradox is a data phenomenon in which a trend observed between varia
 
 ```{r, simpsons, width = 6, height = 2.5, fig.cap = "Trends for penguin bill dimensions (bill length and bill depth, millimeters) if the species variable is excluded (A) or included (B), illustrating Simpson’s Paradox. Note: linear regression for bill dimensions without including species in (A) is ill-advised; the linear trendline is only included to visualize trend reversal for Simpson’s Paradox when compared to (B).", fig.pos='htbp'}
 ```
+
+```{r}
+library(crosstalk)
+shared_penguins <- SharedData$new(penguins, ~species)
+
+simpson_nospecies <- ggplot(data = shared_penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point(color = "gray40", alpha = 0.6, size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  theme_minimal() +
+  theme(panel.border = element_rect(fill = NA, color = "gray70")) +
+  labs(x = "Bill length (mm)", y = "Bill depth (mm)") 
+
+simpson_wspecies <-
+  ggplot(data = shared_penguins, aes(x = bill_length_mm, y = bill_depth_mm, group = species)) +
+  geom_point(aes(color = species, shape = species), size = 2, alpha = 0.8) +
+  geom_smooth(method = "lm", se = FALSE, aes(color = species), show.legend = FALSE) +
+  scale_color_paletteer_d("colorblindr::OkabeIto") +
+  theme_minimal() +
+  theme(panel.border = element_rect(fill = NA, color = "gray70")) +
+  labs(x = "Bill length (mm)", y = "Bill depth (mm)") +
+  guides(color = guide_legend("species"),
+         shape = "none") 
+
+
+bscols(widths = c(2,NA),
+  list(
+    filter_checkbox("species", "Species", shared_penguins, ~species, inline = TRUE)
+  ),
+  plotly::ggplotly(simpson_wspecies)
+)
+```
+
 
 ### Principal component analysis
 
